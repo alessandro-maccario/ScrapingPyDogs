@@ -49,7 +49,6 @@ for name in soup.find_all("a", class_="list-item-title"):
 
 #### TEST ####
 
-## pusha su github
 ## crea un branch per vedere se risci, per un singolo nome a collegarti alla pagina e a tirare giù le info
 ## se funziona fanne un ?rebase?? (o merge) e vai avanti
 
