@@ -105,8 +105,17 @@ class Dog:
 
     # SET VITAL STATS FIELDS
 
+    def set_dog_breed_group(self, dog_breed_group):
+        self.dog_breed_group = dog_breed_group
 
+    def set_height(self, height):
+        self.height = height
 
+    def set_weight(self, weight):
+        self.weight = weight
+
+    def set_life_span(self, life_span):
+        self.life_span = life_span
 
 
 # CONNECT TO THE WEB SITE AND USE USER-AGENT TO FAKE THE CONNECTION BY A HUMAN #####
@@ -132,12 +141,28 @@ soup = get_beautiful_soup("https://dogtime.com/dog-breeds/profiles")
 names = get_dogs_name(soup)
 # print(names)
 
+
+################# TESTING
+# soup = get_beautiful_soup(f"https://dogtime.com/dog-breeds/afador")
+# stars = soup.find_all("div", {"class": "characteristic-star-block"})
+
+
+# stars_list = []
+# for star in stars:
+#     stars_list.append(star.text)
+#     stars_list = [x for x in stars_list if x]
+# print(stars_list[0])
+#
+# # print(stars)
+# exit()
+
+##################
+
 # ALL DOGS
 dogs = []
 for name in names:
     soup = get_beautiful_soup(f"https://dogtime.com/dog-breeds/{name.replace(' ', '-')}")
 
-    # TAKE ONLY THE PARAGRAPHS AT THE TOP OF THE WEBSITE
     intro = soup.find("div", {"class": "breeds-single-intro"})
     image = intro.find('img')['data-lazy-src']
 
@@ -146,21 +171,45 @@ for name in names:
     for sentence in description_elements:
         final_description += sentence.text
 
+    stars = soup.find_all("div", {"class": "characteristic-star-block"})
+    stars_list = []
+    for star in stars:
+        stars_list.append(star.text)
+        stars_list = [x for x in stars_list if x]
+    print(stars_list)
+
     # Dog object
     dog = Dog(name)
     dog.set_description(final_description)
     dog.set_image(image)
-    # dog.set_adapts_well_to_apartment_living(3)
-    # dog.set_good_for_novice_owners(2)
-    # dog.set_sensitivity_level(3)
 
+    # TODO
+    # AGGIUNGERE CAMPO ADAPTABILITY CHE SIA SOMMA, ROUND E DIVISIONE PER I VALORI DA 0
+    # A 5 PRESENTI DEI SINGOLI ELEMENTI
+
+    dog.set_adapts_well_to_apartment_living(stars_list[0])
+    dog.set_good_for_novice_owners(stars_list[1])
+    dog.set_sensitivity_level(stars_list[2])
+    dog.set_tolerates_being_alone(stars_list[3])
+    dog.set_tolerates_cold_weather(stars_list[4])
+    dog.set_tolerates_hot_weather(stars_list[5])
+
+    # TODO
+    # AGGIUNGERE ANCHE TUTTE LE ALTRE SCHEDE DI PERFORMANCE
+
+    # TEST PRINT
     print(dog.name)
     print(dog.image)
     print(dog.description)
-    # print(dog.adapts_well_to_apartment_living)
-    # print(dog.good_for_novice_owners)
-    # print(dog.sensitivity_level)
+    print(dog.adapts_well_to_apartment_living)
+    print(dog.good_for_novice_owners)
+    print(dog.sensitivity_level)
+    print(dog.tolerates_being_alone)
+    print(dog.tolerates_cold_weather)
+    print(dog.tolerates_hot_weather)
 
+    # APPEND TO FINAL LIST: EACH ELEMENT IN THIS LIST WILL BE OUR ROW FOR EACH DOG
     dogs.append(dog)
+
 
 # MYSQL INSERT
