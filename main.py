@@ -37,6 +37,77 @@ class Dog:
 
     # SET ALL AROUND FRIENDLINESS FIELDS
 
+    def set_affectionate_with_family(self, affectionate_with_family):
+        self.affectionate_with_family = affectionate_with_family
+
+    def set_kid_friendly(self, kid_friendly):
+        self.kid_friendly = kid_friendly
+
+    def set_dog_friendly(self, dog_friendly):
+        self.dog_friendly = dog_friendly
+
+    def set_friendly_toward_strangers(self, friendly_toward_strangers):
+        self.friendly_toward_strangers = friendly_toward_strangers
+
+    # SET HEALTH AND GROOMING NEEDS FIELDS
+
+    def set_amount_of_shedding(self, amount_of_shedding):
+        self.amount_of_shedding = amount_of_shedding
+
+    def set_drooling_potential(self, drooling_potential):
+        self.drooling_potential = drooling_potential
+
+    def set_easy_to_groom(self, easy_to_groom):
+        self.easy_to_groom = easy_to_groom
+
+    def set_general_health(self, general_health):
+        self.general_health = general_health
+
+    def set_potential_for_weight_gain(self, potential_for_weight_gain):
+        self.potential_for_weight_gain = potential_for_weight_gain
+
+    def set_size(self, size):
+        self.size = size
+
+    # SET TRAINABILITY FIELDS
+
+    def set_easy_to_train(self, easy_to_train):
+        self.easy_to_train = easy_to_train
+
+    def set_intelligence(self, intelligence):
+        self.intelligence = intelligence
+
+    def set_potential_for_mouthiness(self, potential_for_mouthiness):
+        self.potential_for_mouthiness = potential_for_mouthiness
+
+    def set_prey_drive(self, prey_drive):
+        self.prey_drive = prey_drive
+
+    def set_tendency_to_bark_or_howl(self, tendency_to_bark_or_howl):
+        self.tendency_to_bark_or_howl = tendency_to_bark_or_howl
+
+    def set_wanderlust_potential(self, wanderlust_potential):
+        self.wanderlust_potential = wanderlust_potential
+
+    # SET PHYSICAL NEEDS FIELDS
+
+    def set_energy_level(self, energy_level):
+        self.energy_level = energy_level
+
+    def set_intensity(self, intensity):
+        self.intensity = intensity
+
+    def set_exercise_needs(self, exercise_needs):
+        self.exercise_needs = exercise_needs
+
+    def set_potential_for_playfulness(self, potential_for_playfulness):
+        self.potential_for_playfulness = potential_for_playfulness
+
+    # SET VITAL STATS FIELDS
+
+
+
+
 
 # CONNECT TO THE WEB SITE AND USE USER-AGENT TO FAKE THE CONNECTION BY A HUMAN #####
 def get_beautiful_soup(url):
@@ -83,6 +154,7 @@ for name in names:
     # dog.set_good_for_novice_owners(2)
     # dog.set_sensitivity_level(3)
 
+    print(dog.name)
     print(dog.image)
     print(dog.description)
     # print(dog.adapts_well_to_apartment_living)
@@ -90,3 +162,5 @@ for name in names:
     # print(dog.sensitivity_level)
 
     dogs.append(dog)
+
+# MYSQL INSERT
