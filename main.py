@@ -58,6 +58,7 @@ name_l = [x.lower() for x in name_l]
 ## dei nomi dei cani.
 ## CONVERTIRE IL SEGUENTE CODICE IN UNA FUNZIONE CHE FACCIA LA STESSA COSA: ARGOMENTI --> NOME DEL CANE, URL
 ## CHE DEVE ESSERE INTEGRATO COL NOME DEL CANE
+## test
 
 ## FIRST DOG: AFADOR
 url_afador = "https://dogtime.com/dog-breeds/afador"
