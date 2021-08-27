@@ -2,4 +2,4 @@
 Photo by James Barker on Unsplash
 
 # ScrapingPyDogs
-Scraping dogs information from a dog website to use it for a MySql database
+Scraping dogs information from a website to use it for a MySql database, to show my knowledge of Python and MySQL.
