@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import pandas as pd
 import urllib.request
 from bs4 import BeautifulSoup
 
@@ -36,7 +37,6 @@ class Dog:
         self.tolerates_hot_weather = tolerates_hot_weather
 
     # SET ALL AROUND FRIENDLINESS FIELDS
-
     def set_affectionate_with_family(self, affectionate_with_family):
         self.affectionate_with_family = affectionate_with_family
 
@@ -50,7 +50,6 @@ class Dog:
         self.friendly_toward_strangers = friendly_toward_strangers
 
     # SET HEALTH AND GROOMING NEEDS FIELDS
-
     def set_amount_of_shedding(self, amount_of_shedding):
         self.amount_of_shedding = amount_of_shedding
 
@@ -70,7 +69,6 @@ class Dog:
         self.size = size
 
     # SET TRAINABILITY FIELDS
-
     def set_easy_to_train(self, easy_to_train):
         self.easy_to_train = easy_to_train
 
@@ -90,7 +88,6 @@ class Dog:
         self.wanderlust_potential = wanderlust_potential
 
     # SET PHYSICAL NEEDS FIELDS
-
     def set_energy_level(self, energy_level):
         self.energy_level = energy_level
 
@@ -104,7 +101,6 @@ class Dog:
         self.potential_for_playfulness = potential_for_playfulness
 
     # SET VITAL STATS FIELDS
-
     def set_dog_breed_group(self, dog_breed_group):
         self.dog_breed_group = dog_breed_group
 
@@ -126,7 +122,7 @@ def get_beautiful_soup(url):
     data = infile.decode('utf-8')
     return BeautifulSoup(data, 'html.parser')
 
-
+# FUNCTION TO GET DOG'S NAME
 def get_dogs_name(soup):
     names = []
     for name in soup.find_all("a", class_="list-item-title"):
@@ -139,53 +135,56 @@ def get_dogs_name(soup):
 # BUSINESS LOGIC
 soup = get_beautiful_soup("https://dogtime.com/dog-breeds/profiles")
 names = get_dogs_name(soup)
-# print(names)
 
-
-################# TESTING
-# soup = get_beautiful_soup(f"https://dogtime.com/dog-breeds/afador")
-# stars = soup.find_all("div", {"class": "characteristic-star-block"})
-
-
-# stars_list = []
-# for star in stars:
-#     stars_list.append(star.text)
-#     stars_list = [x for x in stars_list if x]
-# print(stars_list[0])
-#
-# # print(stars)
-# exit()
-
-##################
 
 # ALL DOGS
 dogs = []
 for name in names:
+    # GET EACH PAGE WITH A DIFFERENT DOG'S NAME
     soup = get_beautiful_soup(f"https://dogtime.com/dog-breeds/{name.replace(' ', '-')}")
 
+    # FIND THE RIGHT CLASS WHERE TO FIND INTRO, IMAGE
     intro = soup.find("div", {"class": "breeds-single-intro"})
     image = intro.find('img')['data-lazy-src']
 
+    # GET DESCRIPTION FROM THE TOP OF THE PAGE
     description_elements = intro.find_all('p')[:-2]
     final_description = ''
     for sentence in description_elements:
         final_description += sentence.text
 
+    # GET THE STARS FROM THE DOG'S CHARACTERISTICS OF THE PAGE
     stars = soup.find_all("div", {"class": "characteristic-star-block"})
     stars_list = []
     for star in stars:
         stars_list.append(star.text)
         stars_list = [x for x in stars_list if x]
-    print(stars_list)
 
-    # Dog object
+    # GET VITAL STATS LIST
+    vital_stats = soup.find_all("div", {"class": "vital-stat-box"})
+
+    vital_stats_list = []
+    for vital_field in vital_stats:
+        vital_stats_list.append(vital_field.text)
+        vital_stats_list = [x for x in vital_stats_list if x]
+
+    vital_stats_final = []
+    for element in vital_stats_list:
+        # FIND THE INDEX OF ":"
+        i = element.index(":")
+        # USE THAT INDEX TO FIND THE SUBSTRING TO STRIP
+        element = element[i + 1:].strip()
+        vital_stats_final.append(element)
+
+
+    # DOG OBJECT
     dog = Dog(name)
     dog.set_description(final_description)
     dog.set_image(image)
 
     # TODO
-    # AGGIUNGERE CAMPO ADAPTABILITY CHE SIA SOMMA, ROUND E DIVISIONE PER I VALORI DA 0
-    # A 5 PRESENTI DEI SINGOLI ELEMENTI
+    ## AGGIUNGERE CAMPO ADAPTABILITY CHE SIA SOMMA, ROUND E DIVISIONE PER I VALORI DA 0
+    ## A 5 PRESENTI DEI SINGOLI ELEMENTI
 
     # ADAPTABILITY
     dog.set_adapts_well_to_apartment_living(stars_list[0])
@@ -196,52 +195,58 @@ for name in names:
     dog.set_tolerates_hot_weather(stars_list[5])
 
     # ALL ROUND FRIENDLINESS
-    dog.set_affectionate_with_family()
-    dog.set_kid_friendly()
-    dog.set_dog_friendly()
-    dog.set_friendly_toward_strangers()
+    dog.set_affectionate_with_family(stars_list[6])
+    dog.set_kid_friendly(stars_list[7])
+    dog.set_dog_friendly(stars_list[8])
+    dog.set_friendly_toward_strangers(stars_list[9])
 
     # HEALTH AND GROOMING NEEDS
-    dog.set_amount_of_shedding()
-    dog.set_drooling_potential()
-    dog.set_easy_to_groom()
-    dog.set_general_health()
-    dog.set_potential_for_weight_gain()
-    dog.set_size()
+    dog.set_amount_of_shedding(stars_list[10])
+    dog.set_drooling_potential(stars_list[11])
+    dog.set_easy_to_groom(stars_list[12])
+    dog.set_general_health(stars_list[13])
+    dog.set_potential_for_weight_gain(stars_list[14])
+    dog.set_size(stars_list[15])
 
     # TRAINABILITY
-    dog.set_easy_to_train()
-    dog.set_intelligence()
-    dog.set_potential_for_mouthiness()
-    dog.set_prey_drive()
-    dog.set_tendency_to_bark_or_howl()
-    dog.set_wanderlust_potential()
+    dog.set_easy_to_train(stars_list[16])
+    dog.set_intelligence(stars_list[17])
+    dog.set_potential_for_mouthiness(stars_list[18])
+    dog.set_prey_drive(stars_list[19])
+    dog.set_tendency_to_bark_or_howl(stars_list[20])
+    dog.set_wanderlust_potential(stars_list[21])
 
     # PHYSICAL NEEDS
-    dog.set_energy_level()
-    dog.set_intensity()
-    dog.set_exercise_needs()
-    dog.set_potential_for_playfulness()
+    dog.set_energy_level(stars_list[22])
+    dog.set_intensity(stars_list[23])
+    dog.set_exercise_needs(stars_list[24])
+    dog.set_potential_for_playfulness(stars_list[25])
 
     # VITAL STATS
-    dog.set_dog_breed_group()
-    dog.set_height()
-    dog.set_weight()
-    dog.set_life_span()
+    dog.set_dog_breed_group(vital_stats_final[0])
+    dog.set_height(vital_stats_final[1])
+    dog.set_weight(vital_stats_final[2])
+    dog.set_life_span(vital_stats_final[3])
 
     # TEST PRINT
     print(dog.name)
-    print(dog.image)
-    print(dog.description)
-    print(dog.adapts_well_to_apartment_living)
-    print(dog.good_for_novice_owners)
-    print(dog.sensitivity_level)
-    print(dog.tolerates_being_alone)
-    print(dog.tolerates_cold_weather)
-    print(dog.tolerates_hot_weather)
+    # print(dog.image)
+    # print(dog.description)
+    # print(dog.adapts_well_to_apartment_living)
+    # print(dog.good_for_novice_owners)
+    # print(dog.sensitivity_level)
+    # print(dog.tolerates_being_alone)
+    # print(dog.tolerates_cold_weather)
+    # print(dog.tolerates_hot_weather)
 
     # APPEND TO FINAL LIST: EACH ELEMENT IN THIS LIST WILL BE OUR ROW FOR EACH DOG
     dogs.append(dog)
 
+print(dogs)
 
-# MYSQL INSERT
+# CONVERTING TO EXCEL AND CSV
+pd.DataFrame(dogs).to_excel('dogs_output.xlsx', header=False)
+pd.DataFrame(dogs).to_csv('dogs_output.csv', header=False)
+
+# TODO:
+## MYSQL INSERT OR CREATE A NEW SQL DATABASE FROM SCRATCH WITH PYTHON
