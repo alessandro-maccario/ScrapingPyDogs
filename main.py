@@ -187,6 +187,7 @@ for name in names:
     # AGGIUNGERE CAMPO ADAPTABILITY CHE SIA SOMMA, ROUND E DIVISIONE PER I VALORI DA 0
     # A 5 PRESENTI DEI SINGOLI ELEMENTI
 
+    # ADAPTABILITY
     dog.set_adapts_well_to_apartment_living(stars_list[0])
     dog.set_good_for_novice_owners(stars_list[1])
     dog.set_sensitivity_level(stars_list[2])
@@ -194,8 +195,39 @@ for name in names:
     dog.set_tolerates_cold_weather(stars_list[4])
     dog.set_tolerates_hot_weather(stars_list[5])
 
-    # TODO
-    # AGGIUNGERE ANCHE TUTTE LE ALTRE SCHEDE DI PERFORMANCE
+    # ALL ROUND FRIENDLINESS
+    dog.set_affectionate_with_family()
+    dog.set_kid_friendly()
+    dog.set_dog_friendly()
+    dog.set_friendly_toward_strangers()
+
+    # HEALTH AND GROOMING NEEDS
+    dog.set_amount_of_shedding()
+    dog.set_drooling_potential()
+    dog.set_easy_to_groom()
+    dog.set_general_health()
+    dog.set_potential_for_weight_gain()
+    dog.set_size()
+
+    # TRAINABILITY
+    dog.set_easy_to_train()
+    dog.set_intelligence()
+    dog.set_potential_for_mouthiness()
+    dog.set_prey_drive()
+    dog.set_tendency_to_bark_or_howl()
+    dog.set_wanderlust_potential()
+
+    # PHYSICAL NEEDS
+    dog.set_energy_level()
+    dog.set_intensity()
+    dog.set_exercise_needs()
+    dog.set_potential_for_playfulness()
+
+    # VITAL STATS
+    dog.set_dog_breed_group()
+    dog.set_height()
+    dog.set_weight()
+    dog.set_life_span()
 
     # TEST PRINT
     print(dog.name)
