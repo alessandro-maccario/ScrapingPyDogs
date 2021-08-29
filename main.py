@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 import pandas as pd
 import urllib.request
 from bs4 import BeautifulSoup
@@ -119,8 +120,9 @@ def get_beautiful_soup(url):
     # Open the URL as Browser, not as python urllib
     page = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
     infile = urllib.request.urlopen(page).read()
-    data = infile.decode('utf-8')
-    return BeautifulSoup(data, 'html.parser')
+    # data = infile.decode('utf-8')
+    data = infile.decode('ascii','ignore')
+    return BeautifulSoup(data, 'html.parser', exclude_encodings=["ISO-8859-7"])
 
 # FUNCTION TO GET DOG'S NAME
 def get_dogs_name(soup):
@@ -136,10 +138,23 @@ def get_dogs_name(soup):
 soup = get_beautiful_soup("https://dogtime.com/dog-breeds/profiles")
 names = get_dogs_name(soup)
 
+# POICHE' L'AMERICAN BULLDOG E L'AMERICAN ENGLISH COONHOUND E DORKIE
+# DAVA PROBLEMI NELLO SCARICAMENTO DATI.
+# SI E' DECISO DI ELIMINARLI E DI TRATTARLI
+# SEPARATAMENTE IN UN SECONDO MOMENTO
+print(names.index('american bulldog'))
+print(names.pop(12))
+print(names.pop(12))
+print(names.pop(160))
+print(names)
+print("Lunghezza lista: ", len(names))
+# exit()
+
+# 'american bulldog'
 
 # ALL DOGS
 dogs = []
-for name in names:
+for index, name in enumerate(names):
     # GET EACH PAGE WITH A DIFFERENT DOG'S NAME
     soup = get_beautiful_soup(f"https://dogtime.com/dog-breeds/{name.replace(' ', '-')}")
 
@@ -226,10 +241,15 @@ for name in names:
     dog.set_dog_breed_group(vital_stats_final[0])
     dog.set_height(vital_stats_final[1])
     dog.set_weight(vital_stats_final[2])
+    # TODO:
+    ## SE LA PROSSIMA RIGA E' COMMENTATA NON DA PROBLEMI,
+    ## ALTRIMENTI ALL'AMERICAN BULLDOG SI BLOCCA.
+    ## RICONTROLLA A QUALE ELEMENTO FA RIFERIMENTO, PER QUELLA
+    ## PAGINA IL LIFE SPAN DEL VITAL STATS!
     dog.set_life_span(vital_stats_final[3])
 
     # TEST PRINT
-    print(dog.name)
+    print(index, dog.name)
     # print(dog.image)
     # print(dog.description)
     # print(dog.adapts_well_to_apartment_living)
@@ -241,6 +261,7 @@ for name in names:
 
     # APPEND TO FINAL LIST: EACH ELEMENT IN THIS LIST WILL BE OUR ROW FOR EACH DOG
     dogs.append(dog)
+
 
 print(dogs)
 
