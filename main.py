@@ -264,12 +264,28 @@ with open('out.csv','w',newline='') as f:
 
     for obj in dogs:
         # Build a dictionary of the member names and values...
-        w.writerow({k:getattr(obj,k) for k in dir(obj) if not k.startswith('_') and not callable(getattr(obj, k))})
+        w.writerow({k:getattr(obj,k) for k in vars(obj)})
 
 #####################################################################
 
 
+#####################################################################
+# TODO:
+## TREAT SINGLE PAGES OF THE DOGS NOT FOUND SEPARATELY
 print("Dogs not found: ", not_find)
+#####################################################################
 
+
+#####################################################################
+# TODO:
+## ADD FIELDS THAT WOULD BE THE SUM, ROUND AND DIVISION FOR THE UPPER
+## CATEGORY (LIKE ADAPTABILITY, TRAINABILITY, ETC. FROM 0 TO 5)
+## WITH PANDAS: RE-OPEN THE CSV AND ADD THAT COLUMNS AS SUM OF
+## OTHER COLUMNS VALUES
+#####################################################################
+
+
+#####################################################################
 # TODO:
 ## MYSQL INSERT OR CREATE A NEW SQL DATABASE FROM SCRATCH WITH PYTHON
+#####################################################################
