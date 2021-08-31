@@ -279,7 +279,8 @@ print("Dogs not found: ", not_find)
 ## ADD FIELDS THAT WOULD BE THE SUM, ROUND AND DIVISION FOR THE UPPER
 ## CATEGORY (LIKE ADAPTABILITY, TRAINABILITY, ETC. FROM 0 TO 5)
 ## WITH PANDAS: RE-OPEN THE CSV AND ADD THAT COLUMNS AS SUM OF
-## OTHER COLUMNS VALUES
+## OTHER COLUMNS VALUES.
+## SEE "df_manipulation.py"
 #####################################################################
 
 
