@@ -4,8 +4,8 @@ import pandas as pd
 import urllib.request
 from bs4 import BeautifulSoup
 
-
-# CLASS DOG
+#####################################################################
+# CREATE CLASS DOG
 class Dog:
 
     def __init__(self, name):
@@ -114,6 +114,7 @@ class Dog:
     def set_life_span(self, life_span):
         self.life_span = life_span
 
+#####################################################################
 
 # CONNECT TO THE WEB SITE AND USE USER-AGENT TO FAKE THE CONNECTION BY A HUMAN #####
 def get_beautiful_soup(url):
@@ -133,26 +134,23 @@ def get_dogs_name(soup):
     # CONVERT TO LOWER CASE, REQUIRED TO ADD THE DOG'S NAME TO THE URL
     return [x.lower() for x in names]
 
-
+#####################################################################
 # BUSINESS LOGIC
 soup = get_beautiful_soup("https://dogtime.com/dog-breeds/profiles")
 names = get_dogs_name(soup)
 
 print(names)
-print("Lunghezza lista: ", len(names))
-# exit()
+print("LENGTH OF THE DOGS LIST: ", len(names))
 
-# ALL DOGS
+# LIST OF ALL DOGS
 dogs = []
+# IF DOGS NOT FOUND (BECAUSE DIFFERENT LINK) INSERT IN THIS LIST
 not_find = []
 
-# TEST ONLY FOR FIRST 5 ROWS
-test_5_rows = 0
+#####################################################################
+# DOWNLOADING DATA
+
 for index, name in enumerate(names):
-    if test_5_rows == 3:
-        break
-    else:
-        test_5_rows += 1
         try:
             # GET EACH PAGE WITH A DIFFERENT DOG'S NAME
             soup = get_beautiful_soup(f"https://dogtime.com/dog-breeds/{name.replace(' ', '-')}")
