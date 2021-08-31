@@ -256,10 +256,10 @@ for index, name in enumerate(names):
         dogs.append(dog)
 
 #####################################################################
-# WRITING RESULTS TO CSV
+# # WRITING RESULTS TO CSV
 with open('out.csv','w',newline='') as f:
     # fieldnames lists the headers for the csv.
-    w = csv.DictWriter(f,fieldnames=dir(dogs[0]))
+    w = csv.DictWriter(f,fieldnames=vars(dogs[0]))
     w.writeheader()
 
     for obj in dogs:
@@ -267,6 +267,7 @@ with open('out.csv','w',newline='') as f:
         w.writerow({k:getattr(obj,k) for k in dir(obj) if not k.startswith('_') and not callable(getattr(obj, k))})
 
 #####################################################################
+
 
 print("Dogs not found: ", not_find)
 
