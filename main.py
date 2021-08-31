@@ -195,17 +195,17 @@ for index, name in enumerate(names):
             vital_stats_final.append(element)
 
 
-        # DOG OBJECT
-        dog = Dog(name)
-        dog.set_description(final_description)
-        dog.set_image(image)
-        print(index, dog.name)
-
         # TODO
-        ## AGGIUNGERE CAMPO ADAPTABILITY CHE SIA SOMMA, ROUND E DIVISIONE PER I VALORI DA 0
-        ## A 5 PRESENTI DEI SINGOLI ELEMENTI
+        ## ADD FIELD THAT WOULD BE THE SUM, ROUND AND DIVISION FOR THE UPPER
+        ## CATEGORY (LIKE ADAPTABILITY, TRAINABILITY, ETC. FROM 0 TO 5
 
         try:
+            # DOG OBJECT
+            dog = Dog(name)
+            dog.set_description(final_description)
+            dog.set_image(image)
+            print(index, dog.name)
+
             # ADAPTABILITY
             dog.set_adapts_well_to_apartment_living(stars_list[0])
             dog.set_good_for_novice_owners(stars_list[1])
@@ -252,41 +252,23 @@ for index, name in enumerate(names):
 
         print("----------------")
 
-        # TEST PRINT
-        # print(index, dog.name)
-        # print(dog.image)
-        # print(dog.description)
-        # print(dog.adapts_well_to_apartment_living)
-        # print(dog.good_for_novice_owners)
-        # print(dog.sensitivity_level)
-        # print(dog.tolerates_being_alone)
-        # print(dog.tolerates_cold_weather)
-        # print(dog.tolerates_hot_weather)
-
         # APPEND TO FINAL LIST: EACH ELEMENT IN THIS LIST WILL BE OUR ROW FOR EACH DOG
         dogs.append(dog)
 
 #####################################################################
-#
-# with open('out.csv','w',newline='') as f:
-#     # fieldnames lists the headers for the csv.
-#     w = csv.DictWriter(f,fieldnames=sorted(dir(dogs[0])))
-#     w.writeheader()
-#
-#     for obj in dogs:
-#         # Build a dictionary of the member names and values...
-#         w.writerow({k:getattr(obj,k) for k in dir(dogs)})
+# WRITING RESULTS TO CSV
+with open('out.csv','w',newline='') as f:
+    # fieldnames lists the headers for the csv.
+    w = csv.DictWriter(f,fieldnames=dir(dogs[0]))
+    w.writeheader()
 
+    for obj in dogs:
+        # Build a dictionary of the member names and values...
+        w.writerow({k:getattr(obj,k) for k in dir(obj) if not k.startswith('_') and not callable(getattr(obj, k))})
 
-#
-# print(Dog.get_list())
 #####################################################################
 
 print("Dogs not found: ", not_find)
-
-# CONVERTING TO EXCEL AND CSV
-pd.DataFrame(dogs).to_excel('dogs_output.xlsx', header=False)
-pd.DataFrame(dogs).to_csv('dogs_output.csv', header=False)
 
 # TODO:
 ## MYSQL INSERT OR CREATE A NEW SQL DATABASE FROM SCRATCH WITH PYTHON
