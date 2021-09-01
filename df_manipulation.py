@@ -105,3 +105,8 @@ df.insert(29, "physical_needs", column_to_move_physical_needs)
 # EXPORT TO CSV
 df.to_csv('new_out.csv', index=False)
 
+
+# TODO
+## RUN AGAIN THE ENTIRE MAIN CODE TO OBTAIN ALL DOGS
+## TREAT DOGS NOT OBTAIN CAUSE THE DIFFERENT NAME OF THE PAGE LINK
+## FINALLY MISSING SQL PART
