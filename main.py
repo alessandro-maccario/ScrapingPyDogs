@@ -163,10 +163,10 @@ for index, name in enumerate(names):
         image = intro.find('img')['data-lazy-src']
 
         # GET DESCRIPTION FROM THE TOP OF THE PAGE
-        description_elements = intro.find_all('p')[:-2]
-        final_description = ''
+        description_elements = intro.find_all('p')
+        # final_description = ''
         for sentence in description_elements:
-            final_description += sentence.text
+            final_description = ''.join(sentence.text)
 
         # GET THE STARS FROM THE DOG'S CHARACTERISTICS OF THE PAGE
         stars = soup.find_all("div", {"class": "characteristic-star-block"})
