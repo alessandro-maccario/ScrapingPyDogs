@@ -151,19 +151,33 @@ not_find = []
 # DOWNLOADING DATA
 
 for index, name in enumerate(names):
-    try:
-        # GET EACH PAGE WITH A DIFFERENT DOG'S NAME
-        soup = get_beautiful_soup(f"https://dogtime.com/dog-breeds/{name.replace(' ', '-')}")
-    except:
-        not_find.append(name)
-        continue
+    # DEALING WITH DIFFERENT URL DOGS NAME
+    if name == "korean jindo dog":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/jindo#/slide/1")
+    elif name == "mutt (mixed)":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/mutt#/slide/1")
+    elif name == "petit basset griffon venden":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/petit-basset-griffon-vendeen#/slide/1")
+    elif name == "xoloitzcuintli":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/xoloitzuintli")
+    elif name == "norwegian elkhound":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/norwegian-elkhound#/slide/1")
+    elif name == "american english coonhound":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/american-english-coonhound#/slide/1")
+    else:
+        try:
+            # GET EACH PAGE WITH A DIFFERENT DOG'S NAME
+            soup = get_beautiful_soup(f"https://dogtime.com/dog-breeds/{name.replace(' ', '-')}")
+        except:
+            not_find.append(name)
+            continue
 
     # FIND THE RIGHT CLASS WHERE TO FIND INTRO, IMAGE
     intro = soup.find("div", {"class": "breeds-single-intro"})
     image = intro.find('img')['data-lazy-src']
 
     # GET DESCRIPTION FROM THE TOP OF THE PAGE
-    description_elements = intro.find_all('p')
+    description_elements = intro.find_all('p')[:-1]
     final_description = ''
     for sentence in description_elements:
         final_description += sentence.text
@@ -175,7 +189,6 @@ for index, name in enumerate(names):
         stars_list.append(star.text)
         stars_list = [x for x in stars_list if x]
 
-    # print("Stars list: ", stars_list)
     # GET VITAL STATS LIST
     vital_stats = soup.find_all("div", {"class": "vital-stat-box"})
 
@@ -192,17 +205,16 @@ for index, name in enumerate(names):
         element = element[i + 1:].strip()
         vital_stats_final.append(element)
 
+    # DOG OBJECT
+    dog = Dog(name)
+    print(index, dog.name)
 
-    # TODO
-    ## ADD FIELD THAT WOULD BE THE SUM, ROUND AND DIVISION FOR THE UPPER
-    ## CATEGORY (LIKE ADAPTABILITY, TRAINABILITY, ETC. FROM 0 TO 5)
+    # INITIAL DESCRIPTION
+    dog.set_description(final_description)
+    # IMAGE
+    dog.set_image(image)
+
     try:
-        # DOG OBJECT
-        dog = Dog(name)
-        dog.set_description(final_description)
-        dog.set_image(image)
-        print(index, dog.name)
-
         # ADAPTABILITY
         dog.set_adapts_well_to_apartment_living(stars_list[0])
         dog.set_good_for_novice_owners(stars_list[1])
@@ -238,19 +250,33 @@ for index, name in enumerate(names):
         dog.set_intensity(stars_list[23])
         dog.set_exercise_needs(stars_list[24])
         dog.set_potential_for_playfulness(stars_list[25])
-
-        # VITAL STATS
-        dog.set_dog_breed_group(vital_stats_final[0])
-        dog.set_height(vital_stats_final[1])
-        dog.set_weight(vital_stats_final[2])
-        dog.set_life_span(vital_stats_final[3])
     except:
         continue
 
-    print("----------------")
+    # VITAL STATS
+    try:
+        dog.set_dog_breed_group(vital_stats_final[0])
+    except:
+        dog.set_dog_breed_group("")
+    try:
+        dog.set_height(vital_stats_final[1])
+    except:
+        dog.set_height("")
+    try:
+        dog.set_weight(vital_stats_final[2])
+    except:
+        dog.set_weight("")
+    try:
+        dog.set_life_span(vital_stats_final[3])
+    except:
+        dog.set_life_span("")
 
     # APPEND TO FINAL LIST: EACH ELEMENT IN THIS LIST WILL BE OUR ROW FOR EACH DOG
+    print("--------- PRINTING INSIDE DATASET ---------")
     dogs.append(dog)
+    print("--------- NEXT ---------")
+
+
 
 #####################################################################
 # # WRITING RESULTS TO CSV
