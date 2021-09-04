@@ -123,7 +123,7 @@ def get_beautiful_soup(url):
     infile = urllib.request.urlopen(page).read()
     # data = infile.decode('utf-8')
     data = infile.decode('ascii','ignore')
-    return BeautifulSoup(data, 'html.parser', exclude_encodings=["ISO-8859-7"])
+    return BeautifulSoup(data, 'lxml', exclude_encodings=["ISO-8859-7"])
 
 # FUNCTION TO GET DOG'S NAME
 def get_dogs_name(soup):
@@ -151,6 +151,18 @@ not_find = []
 # DOWNLOADING DATA
 
 for index, name in enumerate(names):
+    # DEALING WITH DIFFERENT URL DOGS NAME
+    if name == "korean jindo dog":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/jindo")
+    elif name == "mutt (mixed)":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/mutt")
+    elif name == "petit basset griffon venden":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/petit-basset-griffon-vendeen")
+    elif name == "xoloitzcuintli":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/xoloitzuintli")
+    elif name == "australian shepherd husky":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/australian-shepherd-husky")
+    else:
         try:
             # GET EACH PAGE WITH A DIFFERENT DOG'S NAME
             soup = get_beautiful_soup(f"https://dogtime.com/dog-breeds/{name.replace(' ', '-')}")
@@ -158,104 +170,190 @@ for index, name in enumerate(names):
             not_find.append(name)
             continue
 
-        # FIND THE RIGHT CLASS WHERE TO FIND INTRO, IMAGE
-        intro = soup.find("div", {"class": "breeds-single-intro"})
-        image = intro.find('img')['data-lazy-src']
+    # FIND THE RIGHT CLASS WHERE TO FIND INTRO, IMAGE
+    intro = soup.find("div", {"class": "breeds-single-intro"})
+    image = intro.find('img')['data-lazy-src']
 
-        # GET DESCRIPTION FROM THE TOP OF THE PAGE
-        description_elements = intro.find_all('p')[:-2]
-        final_description = ''
-        for sentence in description_elements:
-            final_description += sentence.text
+    # GET DESCRIPTION FROM THE TOP OF THE PAGE
+    description_elements = intro.find_all('p')[:-1]
+    final_description = ''
+    for sentence in description_elements:
+        final_description += sentence.text
 
-        # GET THE STARS FROM THE DOG'S CHARACTERISTICS OF THE PAGE
-        stars = soup.find_all("div", {"class": "characteristic-star-block"})
-        stars_list = []
-        for star in stars:
-            stars_list.append(star.text)
-            stars_list = [x for x in stars_list if x]
+    # GET THE STARS FROM THE DOG'S CHARACTERISTICS OF THE PAGE
+    stars = soup.find_all("div", {"class": "characteristic-star-block"})
+    stars_list = []
+    for star in stars:
+        stars_list.append(star.text)
+        stars_list = [x for x in stars_list if x]
 
-        # print("Stars list: ", stars_list)
-        # GET VITAL STATS LIST
-        vital_stats = soup.find_all("div", {"class": "vital-stat-box"})
+    # GET VITAL STATS LIST
+    vital_stats = soup.find_all("div", {"class": "vital-stat-box"})
 
-        vital_stats_list = []
-        for vital_field in vital_stats:
-            vital_stats_list.append(vital_field.text)
-            vital_stats_list = [x for x in vital_stats_list if x]
+    vital_stats_list = []
+    for vital_field in vital_stats:
+        vital_stats_list.append(vital_field.text)
+        vital_stats_list = [x for x in vital_stats_list if x]
 
-        vital_stats_final = []
-        for element in vital_stats_list:
-            # FIND THE INDEX OF ":"
-            i = element.index(":")
-            # USE THAT INDEX TO FIND THE SUBSTRING TO STRIP
-            element = element[i + 1:].strip()
-            vital_stats_final.append(element)
+    vital_stats_final = []
+    for element in vital_stats_list:
+        # FIND THE INDEX OF ":"
+        i = element.index(":")
+        # USE THAT INDEX TO FIND THE SUBSTRING TO STRIP
+        element = element[i + 1:].strip()
+        vital_stats_final.append(element)
 
+    # CREATE DOG OBJECT
+    dog = Dog(name)
+    print(index, dog.name)
 
-        # TODO
-        ## ADD FIELD THAT WOULD BE THE SUM, ROUND AND DIVISION FOR THE UPPER
-        ## CATEGORY (LIKE ADAPTABILITY, TRAINABILITY, ETC. FROM 0 TO 5
+    # TAKE IMPORTANT ELEMENTS OF THE PAGE
+    # INITIAL DESCRIPTION
+    dog.set_description(final_description)
+    # IMAGE
+    dog.set_image(image)
 
-        try:
-            # DOG OBJECT
-            dog = Dog(name)
-            dog.set_description(final_description)
-            dog.set_image(image)
-            print(index, dog.name)
+    # GET ALL THE DOGS CHARACTERISTICS
+    # 1. ADAPTABILITY
+    try:
+        dog.set_adapts_well_to_apartment_living(stars_list[0])
+    except:
+        dog.set_adapts_well_to_apartment_living("")
+    try:
+        dog.set_good_for_novice_owners(stars_list[1])
+    except:
+        dog.set_good_for_novice_owners("")
+    try:
+        dog.set_sensitivity_level(stars_list[2])
+    except:
+        dog.set_sensitivity_level("")
+    try:
+        dog.set_tolerates_being_alone(stars_list[3])
+    except:
+        dog.set_tolerates_being_alone("")
+    try:
+        dog.set_tolerates_cold_weather(stars_list[4])
+    except:
+        dog.set_tolerates_cold_weather("")
+    try:
+        dog.set_tolerates_hot_weather(stars_list[5])
+    except:
+        dog.set_tolerates_hot_weather("")
 
-            # ADAPTABILITY
-            dog.set_adapts_well_to_apartment_living(stars_list[0])
-            dog.set_good_for_novice_owners(stars_list[1])
-            dog.set_sensitivity_level(stars_list[2])
-            dog.set_tolerates_being_alone(stars_list[3])
-            dog.set_tolerates_cold_weather(stars_list[4])
-            dog.set_tolerates_hot_weather(stars_list[5])
+    # 2. ALL ROUND FRIENDLINESS
+    try:
+        dog.set_affectionate_with_family(stars_list[6])
+    except:
+        dog.set_affectionate_with_family("")
+    try:
+        dog.set_kid_friendly(stars_list[7])
+    except:
+        dog.set_kid_friendly("")
+    try:
+        dog.set_dog_friendly(stars_list[8])
+    except:
+        dog.set_dog_friendly("")
+    try:
+        dog.set_friendly_toward_strangers(stars_list[9])
+    except:
+        dog.set_friendly_toward_strangers("")
 
-            # ALL ROUND FRIENDLINESS
-            dog.set_affectionate_with_family(stars_list[6])
-            dog.set_kid_friendly(stars_list[7])
-            dog.set_dog_friendly(stars_list[8])
-            dog.set_friendly_toward_strangers(stars_list[9])
+    # 3. HEALTH AND GROOMING NEEDS
+    try:
+        dog.set_amount_of_shedding(stars_list[10])
+    except:
+        dog.set_amount_of_shedding("")
+    try:
+        dog.set_drooling_potential(stars_list[11])
+    except:
+        dog.set_drooling_potential("")
+    try:
+        dog.set_easy_to_groom(stars_list[12])
+    except:
+        dog.set_easy_to_groom("")
+    try:
+        dog.set_general_health(stars_list[13])
+    except:
+        dog.set_general_health("")
+    try:
+        dog.set_potential_for_weight_gain(stars_list[14])
+    except:
+        dog.set_potential_for_weight_gain("")
+    try:
+        dog.set_size(stars_list[15])
+    except:
+        dog.set_size("")
 
-            # HEALTH AND GROOMING NEEDS
-            dog.set_amount_of_shedding(stars_list[10])
-            dog.set_drooling_potential(stars_list[11])
-            dog.set_easy_to_groom(stars_list[12])
-            dog.set_general_health(stars_list[13])
-            dog.set_potential_for_weight_gain(stars_list[14])
-            dog.set_size(stars_list[15])
+    # 4. TRAINABILITY
+    try:
+        dog.set_easy_to_train(stars_list[16])
+    except:
+        dog.set_easy_to_train("")
+    try:
+        dog.set_intelligence(stars_list[17])
+    except:
+        dog.set_intelligence("")
+    try:
+        dog.set_potential_for_mouthiness(stars_list[18])
+    except:
+        dog.set_potential_for_mouthiness("")
+    try:
+        dog.set_prey_drive(stars_list[19])
+    except:
+        dog.set_prey_drive("")
+    try:
+        dog.set_tendency_to_bark_or_howl(stars_list[20])
+    except:
+        dog.set_tendency_to_bark_or_howl("")
+    try:
+        dog.set_wanderlust_potential(stars_list[21])
+    except:
+        dog.set_wanderlust_potential("")
 
-            # TRAINABILITY
-            dog.set_easy_to_train(stars_list[16])
-            dog.set_intelligence(stars_list[17])
-            dog.set_potential_for_mouthiness(stars_list[18])
-            dog.set_prey_drive(stars_list[19])
-            dog.set_tendency_to_bark_or_howl(stars_list[20])
-            dog.set_wanderlust_potential(stars_list[21])
+    # 5. PHYSICAL NEEDS
+    try:
+        dog.set_energy_level(stars_list[22])
+    except:
+        dog.set_energy_level("")
+    try:
+        dog.set_intensity(stars_list[23])
+    except:
+        dog.set_intensity("")
+    try:
+        dog.set_exercise_needs(stars_list[24])
+    except:
+        dog.set_exercise_needs("")
+    try:
+        dog.set_potential_for_playfulness(stars_list[25])
+    except:
+        dog.set_potential_for_playfulness("")
 
-            # PHYSICAL NEEDS
-            dog.set_energy_level(stars_list[22])
-            dog.set_intensity(stars_list[23])
-            dog.set_exercise_needs(stars_list[24])
-            dog.set_potential_for_playfulness(stars_list[25])
+    # VITAL STATS
+    try:
+        dog.set_dog_breed_group(vital_stats_final[0])
+    except:
+        dog.set_dog_breed_group("")
+    try:
+        dog.set_height(vital_stats_final[1])
+    except:
+        dog.set_height("")
+    try:
+        dog.set_weight(vital_stats_final[2])
+    except:
+        dog.set_weight("")
+    try:
+        dog.set_life_span(vital_stats_final[3])
+    except:
+        dog.set_life_span("")
 
-            # VITAL STATS
-            dog.set_dog_breed_group(vital_stats_final[0])
-            dog.set_height(vital_stats_final[1])
-            dog.set_weight(vital_stats_final[2])
-            dog.set_life_span(vital_stats_final[3])
-        except:
-            continue
-
-        print("----------------")
-
-        # APPEND TO FINAL LIST: EACH ELEMENT IN THIS LIST WILL BE OUR ROW FOR EACH DOG
-        dogs.append(dog)
+    # APPEND TO FINAL LIST: EACH ELEMENT IN THIS LIST WILL BE OUR ROW FOR EACH DOG
+    print("--------- PRINTING INSIDE DATASET ---------")
+    dogs.append(dog)
+    print("--------- NEXT ---------")
 
 #####################################################################
 # # WRITING RESULTS TO CSV
-with open('out.csv','w',newline='') as f:
+with open('out.csv','w') as f:
     # fieldnames lists the headers for the csv.
     w = csv.DictWriter(f,fieldnames=vars(dogs[0]))
     w.writeheader()
@@ -264,6 +362,10 @@ with open('out.csv','w',newline='') as f:
         # Build a dictionary of the member names and values...
         w.writerow({k:getattr(obj,k) for k in vars(obj)})
 
+
+# CONVERT TO XLSX
+df = pd.read_csv("out.csv")
+df.to_excel("out.xlsx", index=False)
 #####################################################################
 
 
@@ -271,16 +373,6 @@ with open('out.csv','w',newline='') as f:
 # TODO:
 ## TREAT SINGLE PAGES OF THE DOGS NOT FOUND SEPARATELY
 print("Dogs not found: ", not_find)
-#####################################################################
-
-
-#####################################################################
-# TODO:
-## ADD FIELDS THAT WOULD BE THE SUM, ROUND AND DIVISION FOR THE UPPER
-## CATEGORY (LIKE ADAPTABILITY, TRAINABILITY, ETC. FROM 0 TO 5)
-## WITH PANDAS: RE-OPEN THE CSV AND ADD THAT COLUMNS AS SUM OF
-## OTHER COLUMNS VALUES.
-## SEE "df_manipulation.py"
 #####################################################################
 
 
