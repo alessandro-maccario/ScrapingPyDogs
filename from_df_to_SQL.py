@@ -1,6 +1,7 @@
 import mysql.connector
 from mysql.connector import errorcode
 
+
 # TODO
 ## PROBLEM: INCAPABLE OF CREATING TABLES INSIDE THE DB ALREADY CREATED
 
@@ -113,3 +114,4 @@ cursor.close()
 
 # CLOSE CONNECTION
 cnx.close()
+
