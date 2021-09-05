@@ -353,7 +353,7 @@ for index, name in enumerate(names):
 
 #####################################################################
 # # WRITING RESULTS TO CSV
-with open('out.csv','w') as f:
+with open('out.csv','w', newline='') as f:
     # fieldnames lists the headers for the csv.
     w = csv.DictWriter(f,fieldnames=vars(dogs[0]))
     w.writeheader()
