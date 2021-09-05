@@ -84,4 +84,4 @@ for table_name in TABLES:
 ################################################
 
 # TODO
-## MISSING INSERTING DATA INSIDE TABLES FROM CSV!
+## MISSING: INSERTING DATA INSIDE TABLES FROM CSV!
