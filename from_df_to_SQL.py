@@ -1,4 +1,6 @@
+import csv
 import mysql.connector
+from mysql.connector import errorcode
 
 # CONNECT TO MYSQL
 cnx = mysql.connector.connect(user='root',
@@ -85,3 +87,29 @@ for table_name in TABLES:
 
 # TODO
 ## MISSING: INSERTING DATA INSIDE TABLES FROM CSV!
+
+# TODO
+## TRY INSERT FIRST ONLY THE FIRST LINE OF BREEDS TABLE WITH THE FOLLOWING DATA:
+## ID = 1; ID_BREED_GROUP = 1; NAME = DOGS_NAME; DESCRIPTION = DOGS_DESCRIPTION; URL_IMAGE = DOGS_URL_IMAGE;
+## ADAPTABILITY_ID = REFERENCE THE ADAPTABILITY TABLE (TO UNDERSTAND BETTER); HEIGHT = DOGS_HEIGHT; WEIGHT = DOGS_WIGHT;
+## LIFE_SPAN = DOGS_LIFE_SPAN;
+## FOR  ID_BREED_GROUP YOU HAVE:
+## - KNOW HOW MANY CLASS THERE ARE IN THE ATTRIBUTE
+## - FOR EACH CLASS GIVE IT A NUMBER
+## - THEN YOU HAVE YOUR ID_BREED_GROUP = SOME_NUMBER
+## YOU CAN TRY WITH SOMETHING LIKE THIS:
+
+strSQL = "INSERT INTO `dogs`.`breeds` (name, description, url_image, height, weight, life_span )" + \
+         " VALUES(%s, %s, %s, %s, %s, %s)"
+
+with open('out.csv', 'r') as f:
+    csv_data = csv.reader(f)
+    for row in csv_data:
+        cursor.execute(strSQL, row)
+        conn.commit()
+
+print("Done")
+
+cursor.close()
+conn.close()
+
