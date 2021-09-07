@@ -390,3 +390,6 @@ for index, row in adaptability_df.iterrows():
 print("INSERTING OPERATION: SECOND TABLE DONE!")
 ################################################
 cursor.close()
+
+# TODO
+## NEED TO CORRECT MISSING VALUES IN THE SECOND TABLE
