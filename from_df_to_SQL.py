@@ -146,7 +146,12 @@ dogs_weight = csv_data.iloc[:,31]
 dogs_lifeSpan = csv_data.iloc[:,32]
 
 # CONCATENATE SERIES AND CONVERT TO DATAFRAME
-dogs_df = pd.concat([dogs_name, dogs_description, dogs_image, dogs_height, dogs_weight, dogs_lifeSpan], axis=1)
+dogs_df = pd.concat([dogs_name,
+                     dogs_description,
+                     dogs_image,
+                     dogs_height,
+                     dogs_weight,
+                     dogs_lifeSpan], axis=1)
 
 value = None
 # QUERIES
