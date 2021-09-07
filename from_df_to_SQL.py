@@ -43,9 +43,9 @@ cursor.execute(use_db)
 #      INDEX `fk_breed_in_group_idx` (`id_breed_group` ASC),
 #      INDEX `fk_breeds_adaptability1_idx` (`adaptability_id` ASC),
 #      CONSTRAINT `fk_breed_in_group` FOREIGN KEY (`id_breed_group`)
-#        REFERENCES `dogs`.`breeds_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+#        REFERENCES `dogs_scraping`.`breeds_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
 #      CONSTRAINT `fk_breeds_adaptability1` FOREIGN KEY (`adaptability_id`)
-#        REFERENCES `dogs`.`adaptability` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+#        REFERENCES `dogs_scraping`.`adaptability` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 #     ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARACTER SET = utf8 ''')
 #
 # TABLES['breeds_group'] = (
@@ -75,6 +75,10 @@ TABLES['breeds'] = (
      `id` INT(10) UNIQUE NOT NULL AUTO_INCREMENT,
      `name` VARCHAR(100) UNIQUE NOT NULL,
      `description` TEXT NOT NULL,
+     `url_image` VARCHAR(256) NOT NULL,
+     `height` VARCHAR(100) NULL DEFAULT NULL,
+     `weight` VARCHAR(100) NULL DEFAULT NULL,
+     `life_span` VARCHAR(100) NULL DEFAULT NULL,
      PRIMARY KEY (`id`)
     ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARACTER SET = utf8 ''')
 
@@ -113,28 +117,55 @@ for table_name in TABLES:
 ## YOU CAN TRY WITH SOMETHING LIKE THIS:
 
 ################################################
-# READ THE DATAFRAME
-csv_data = pd.read_csv('out.csv', header=0, encoding = 'utf8', delimiter=",", sep=' *, *', skipinitialspace = True)
+# READ THE DATAFRAME. MAINTAIN NULL VALUES AS EMPTY STRING
+csv_data = pd.read_csv('out.csv',
+                       header=0,
+                       encoding = 'utf8',
+                       delimiter=",",
+                       sep=' *, *',
+                       skipinitialspace = True,
+                       na_filter=False)
 
+# TAKE SINGLE COLUMNS
 # TAKE ONLY THE FIRST COLUMN (NAME)
 dogs_name = csv_data.iloc[:,0]
 
 # TAKE ONLY THE SECOND COLUMN (DESCRIPTION)
 dogs_description = csv_data.iloc[:,1]
 
-# CONCATENATE SERIES AND CONVERT TO DATAFRAME
-dogs_df = pd.concat([dogs_name, dogs_description], axis=1)
+# TAKE ONLY THE THIRD COLUMN (URL_IMAGE)
+dogs_image = csv_data.iloc[:,2]
 
+# TAKE ONLY THE 30TH COLUMN (HEIGHT)
+dogs_height = csv_data.iloc[:,30]
+
+# TAKE ONLY THE 31TH COLUMN (WEIGHT)
+dogs_weight = csv_data.iloc[:,31]
+
+# TAKE ONLY THE 32TH COLUMN (LIFE_SPAN)
+dogs_lifeSpan = csv_data.iloc[:,32]
+
+# CONCATENATE SERIES AND CONVERT TO DATAFRAME
+dogs_df = pd.concat([dogs_name, dogs_description, dogs_image, dogs_height, dogs_weight, dogs_lifeSpan], axis=1)
+
+value = None
 # QUERIES
-to_SQL = """INSERT INTO `dogs_scraping`.`breeds` (name, description) VALUES (%s, %s)"""
+to_SQL = """INSERT INTO `dogs_scraping`.`breeds` (name, description, url_image, height, weight, life_span) VALUES (%s, %s, %s, %s, %s, %s)"""
 
 # CYCLE THROUGH DATAFRAME AND SAVE ROWS TO MYSQL
 for index, row in dogs_df.iterrows():
     try:
-        cursor.execute(to_SQL, ( row['name'], row['description'], ))
+        cursor.execute(to_SQL,
+                       ( row['name'],
+                         row['description'],
+                         row['image'],
+                         row['height'],
+                         row['weight'],
+                         row['life_span']))
         cnx.commit()
     except:
         print("MISSING SOMETHING!")
+        continue
 
 print("INSERTING OPERATION: DONE")
 
