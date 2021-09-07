@@ -1,4 +1,5 @@
 import csv
+import numpy as np
 import pandas as pd
 import mysql.connector
 from mysql.connector import errorcode
@@ -23,6 +24,7 @@ cursor.execute(creating_db)
 use_db = 'USE dogs_scraping'
 cursor.execute(use_db)
 
+cursor.execute("SET FOREIGN_KEY_CHECKS=0")
 
 ################################################
 # CREATE TABLES
@@ -72,8 +74,8 @@ cursor.execute(use_db)
 TABLES = {}
 TABLES['breeds'] = (
     ''' CREATE TABLE IF NOT EXISTS `dogs_scraping`.`breeds` (
-     `id` INT(10) UNIQUE NOT NULL AUTO_INCREMENT,
-     `name` VARCHAR(100) UNIQUE NOT NULL,
+     `id` INT(10) UNSIGNED UNIQUE NOT NULL AUTO_INCREMENT,
+     `name` VARCHAR(100) NOT NULL,
      `description` TEXT NOT NULL,
      `url_image` VARCHAR(256) NOT NULL,
      `height` VARCHAR(100) NULL DEFAULT NULL,
@@ -82,8 +84,39 @@ TABLES['breeds'] = (
      PRIMARY KEY (`id`)
     ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARACTER SET = utf8 ''')
 
-##################################################
+TABLES['adaptability'] = (
+   ''' CREATE TABLE IF NOT EXISTS `dogs_scraping`.`adaptability` (
+    `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `adapts_well_to_apartment_living` INT(11) NOT NULL,
+    `good_for_novice_owners` TEXT NOT NULL,
+    `sensitivity_level` INT(11) NOT NULL,
+    `tolerates_being_alone` INT(11) NOT NULL,
+    `tolerates_cold_weather` INT(11) NOT NULL,
+    `tolerates_hot_weather` INT(11) NOT NULL,
+    `affectionate_with_family` INT(11) NOT NULL,
+    `kid_friendly` INT(11) NOT NULL,
+    `dog_friendly` INT(11) NOT NULL,
+    `friendly_toward_strangers` INT(11) NOT NULL,
+    `amount_of_shedding` INT(11) NOT NULL,
+    `drooling_potential` INT(11) NOT NULL,
+    `easy_to_groom` INT(11) NOT NULL,
+    `general_health` INT(11) NOT NULL,
+    `potential_for_weight_gain` INT(11) NOT NULL,
+    `size` INT(11) NOT NULL,
+    `easy_to_train` INT(11) NOT NULL,
+    `intelligence` INT(11) NOT NULL,
+    `potential_for_mouthiness` INT(11) NOT NULL,
+    `prey_drive` INT(11) NOT NULL,
+    `tendency_to_bark_or_howl` INT(11) NOT NULL,
+    `wanderlust_potential` INT(11) NOT NULL,
+    `energy_level` INT(11) NOT NULL,
+    `intensity` INT(11) NOT NULL,
+    `exercise_needs` INT(11) NOT NULL,
+    `potential_for_playfulness` INT(11) NOT NULL,
+    PRIMARY KEY (`id`)
+    ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARACTER SET = utf8 ''')
 
+##################################################
 # FOR EACH TABLE IN TABLES CREATE TABLE AND HANDLING EXCEPTION
 for table_name in TABLES:
     table_description = TABLES[table_name]
@@ -125,8 +158,9 @@ csv_data = pd.read_csv('out.csv',
                        sep=' *, *',
                        skipinitialspace = True,
                        na_filter=False)
-
-# TAKE SINGLE COLUMNS
+################################################
+# "BREEDS" TABLE
+# TAKE SINGLE COLUMNS FOR "BREEDS" TABLE
 # TAKE ONLY THE FIRST COLUMN (NAME)
 dogs_name = csv_data.iloc[:,0]
 
@@ -153,14 +187,159 @@ dogs_df = pd.concat([dogs_name,
                      dogs_weight,
                      dogs_lifeSpan], axis=1)
 
-value = None
-# QUERIES
-to_SQL = """INSERT INTO `dogs_scraping`.`breeds` (name, description, url_image, height, weight, life_span) VALUES (%s, %s, %s, %s, %s, %s)"""
+################################################
+# ADAPTABILITY TABLE
+# TAKE SINGLE COLUMNS FOR "ADAPTABILITY" TABLE
 
+# TAKE ONLY THE THIRD COLUMN (ADAPTS_WELL_TO_APARTMENT_LIVING)
+dogs_apartments = csv_data.iloc[:,3]
+
+# TAKE ONLY THE SECOND COLUMN (GOOD_FOR_NOVICE_OWNERS)
+dogs_novice_owners = csv_data.iloc[:,4]
+
+# TAKE ONLY THE 30TH COLUMN (SENSITIVITY_LEVEL)
+dogs_sensitivity_level = csv_data.iloc[:,5]
+
+# TAKE ONLY THE 31TH COLUMN (TOLERATES_BEING_ALONE)
+dogs_being_alone = csv_data.iloc[:,6]
+
+# TAKE ONLY THE 32TH COLUMN (TOLERATES_COLD_WEATHER)
+dogs_cold_weather= csv_data.iloc[:,7]
+
+# TAKE ONLY THE 32TH COLUMN (TOLERATES_HOT_WEATHER)
+dogs_hot_weather = csv_data.iloc[:,8]
+
+# TAKE ONLY THE 32TH COLUMN (AFFECTIONATE_WITH_FAMILY)
+dogs_affectionate_with_family = csv_data.iloc[:,9]
+
+# TAKE ONLY THE 32TH COLUMN (KID_FRIENDLY)
+dogs_kid_friendly = csv_data.iloc[:,10]
+
+# TAKE ONLY THE 32TH COLUMN (DOG_FRIENDLY)
+dogs_dog_friendly = csv_data.iloc[:,11]
+
+# TAKE ONLY THE 32TH COLUMN (FRIENDLY_TOWARD_STRANGERS)
+dogs_friendly_toward_stranger = csv_data.iloc[:,12]
+
+# TAKE ONLY THE 32TH COLUMN (AMOUNT_OF_SHEDDING)
+dogs_amount_of_shedding = csv_data.iloc[:,13]
+
+# TAKE ONLY THE 32TH COLUMN (DROOLING_POTENTIAL)
+dogs_drooling_potential = csv_data.iloc[:,14]
+
+# TAKE ONLY THE 32TH COLUMN (EASY_TO_GROOM)
+dogs_easy_to_groom = csv_data.iloc[:,15]
+
+# TAKE ONLY THE 32TH COLUMN (GENERAL_HEALTH)
+dogs_general_health = csv_data.iloc[:,16]
+
+# TAKE ONLY THE 32TH COLUMN (POTENTIAL_FOR_WEIGHT_GAIN)
+dogs_potential_weight_gain = csv_data.iloc[:,17]
+
+# TAKE ONLY THE 32TH COLUMN (SIZE)
+dogs_size = csv_data.iloc[:,18]
+
+# TAKE ONLY THE 32TH COLUMN (EASY_TO_TRAIN)
+dogs_easy_to_train = csv_data.iloc[:,19]
+
+# TAKE ONLY THE 32TH COLUMN (INTELLIGENCE)
+dogs_intelligence = csv_data.iloc[:,20]
+
+# TAKE ONLY THE 32TH COLUMN (POTENTIAL_FOR_MOUTHINESS)
+dogs_potential_mouthiness = csv_data.iloc[:,21]
+
+# TAKE ONLY THE 32TH COLUMN (PREY_DRIVE)
+dogs_prey_drive = csv_data.iloc[:,22]
+
+# TAKE ONLY THE 32TH COLUMN (TENDENCY_TO_BARK_OR_HOWL)
+dogs_tendency_bark_howl = csv_data.iloc[:,23]
+
+# TAKE ONLY THE 32TH COLUMN (WANDERLUST_POTENTIAL)
+dogs_wanderlust_potential = csv_data.iloc[:,24]
+
+# TAKE ONLY THE 32TH COLUMN (ENERGY_LEVEL)
+dogs_energy_level = csv_data.iloc[:,25]
+
+# TAKE ONLY THE 32TH COLUMN (INTENSITY)
+dogs_intensity = csv_data.iloc[:,26]
+
+# TAKE ONLY THE 32TH COLUMN (EXERCISE_NEEDS)
+dogs_exercise_needs = csv_data.iloc[:,27]
+
+# TAKE ONLY THE 32TH COLUMN (POTENTIAL_FOR_PLAYFULNESS)
+dogs_potential_playfulness = csv_data.iloc[:,28]
+
+# CONCATENATE SERIES AND CONVERT TO DATAFRAME
+adaptability_df = pd.concat([
+    dogs_apartments,
+    dogs_novice_owners,
+    dogs_sensitivity_level,
+    dogs_being_alone,
+    dogs_cold_weather,
+    dogs_hot_weather,
+    dogs_affectionate_with_family,
+    dogs_kid_friendly,
+    dogs_dog_friendly,
+    dogs_friendly_toward_stranger,
+    dogs_amount_of_shedding,
+    dogs_drooling_potential,
+    dogs_easy_to_groom,
+    dogs_general_health,
+    dogs_potential_weight_gain,
+    dogs_size,
+    dogs_easy_to_train,
+    dogs_intelligence,
+    dogs_potential_mouthiness,
+    dogs_prey_drive,
+    dogs_tendency_bark_howl,
+    dogs_wanderlust_potential,
+    dogs_energy_level,
+    dogs_intensity,
+    dogs_exercise_needs,
+    dogs_potential_playfulness], axis=1)
+
+adaptability_df.replace(np.NaN, ' ', inplace=True)
+################################################
+# QUERIES
+to_SQL_breeds = """INSERT INTO `dogs_scraping`.`breeds` (name, description, url_image, height, weight, life_span) VALUES 
+(%s, %s, %s, %s, %s, %s)"""
+
+to_SQL_adaptability = """ 
+INSERT INTO `dogs_scraping`.`adaptability` (
+adapts_well_to_apartment_living, 
+good_for_novice_owners, 
+sensitivity_level, 
+tolerates_being_alone,
+tolerates_cold_weather, 
+tolerates_hot_weather, 
+affectionate_with_family, 
+kid_friendly, 
+dog_friendly, 
+friendly_toward_strangers, 
+amount_of_shedding, 
+drooling_potential, 
+easy_to_groom, 
+general_health, 
+potential_for_weight_gain, 
+size, 
+easy_to_train, 
+intelligence, 
+potential_for_mouthiness, 
+prey_drive, 
+tendency_to_bark_or_howl, 
+wanderlust_potential,
+energy_level,
+intensity, 
+exercise_needs, 
+potential_for_playfulness) 
+VALUES (%s, %s, %s, %s, %s, %s, 
+%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """
+
+################################################
 # CYCLE THROUGH DATAFRAME AND SAVE ROWS TO MYSQL
 for index, row in dogs_df.iterrows():
     try:
-        cursor.execute(to_SQL,
+        cursor.execute(to_SQL_breeds,
                        ( row['name'],
                          row['description'],
                          row['image'],
@@ -172,7 +351,42 @@ for index, row in dogs_df.iterrows():
         print("MISSING SOMETHING!")
         continue
 
-print("INSERTING OPERATION: DONE")
+print("INSERTING OPERATION: FIRST TABLE DONE!")
 
-cursor.close()
+for index, row in adaptability_df.iterrows():
+    try:
+        cursor.execute(to_SQL_adaptability,
+                       ( row['adapts_well_to_apartment_living'],
+                         row['good_for_novice_owners'],
+                         row['sensitivity_level'],
+                         row['tolerates_being_alone'],
+                         row['tolerates_cold_weather'],
+                         row['tolerates_hot_weather'],
+                         row['affectionate_with_family'],
+                         row['kid_friendly'],
+                         row['dog_friendly'],
+                         row['friendly_toward_strangers'],
+                         row['amount_of_shedding'],
+                         row['drooling_potential'],
+                         row['easy_to_groom'],
+                         row['general_health'],
+                         row['potential_for_weight_gain'],
+                         row['size'],
+                         row['easy_to_train'],
+                         row['intelligence'],
+                         row['potential_for_mouthiness'],
+                         row['prey_drive'],
+                         row['tendency_to_bark_or_howl'],
+                         row['wanderlust_potential'],
+                         row['energy_level'],
+                         row['intensity'],
+                         row['exercise_needs'],
+                         row['potential_for_playfulness']))
+        cnx.commit()
+    except:
+        print("MISSING SOMETHING!")
+        continue
+
+print("INSERTING OPERATION: SECOND TABLE DONE!")
 ################################################
+cursor.close()
