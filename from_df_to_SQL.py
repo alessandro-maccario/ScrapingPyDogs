@@ -119,16 +119,10 @@ TABLES['adaptability'] = (
 TABLES['breeds_group'] = (
     ''' CREATE TABLE IF NOT EXISTS `dogs_scraping`.`breeds_group` (
         `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-        `dog_breed_group` VARCHAR(100) NOT NULL,
+        `dog_breed_group` VARCHAR(200) NOT NULL,
         PRIMARY KEY (`id`),
         UNIQUE INDEX `dog_breed_group` (`dog_breed_group` ASC)
         ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARACTER SET = utf8 ''')
-
-
-#
-# update"""UPDATE `dogs_scraping`.`breeds`, `dogs_scraping`.`adaptability`
-# SET `breeds`.`adaptability_id` = `adaptability`.`id`
-# WHERE `breeds`.`adaptability_id` = `adaptability`.`id`"""
 
 ##################################################
 # FOR EACH TABLE IN TABLES CREATE TABLE AND HANDLING EXCEPTION
@@ -316,6 +310,10 @@ adaptability_df.at[317,'potential_for_playfulness'] = 5
 # BREED_GROUP TABLE
 # TAKE SINGLE COLUMN FOR "BREED_GROUP" TABLE
 dogs_breed_group = csv_data.iloc[:,29]
+# CONVERT TO DATAFRAME
+dogs_breed_group = pd.DataFrame(data=dogs_breed_group, dtype="string")
+# print(dogs_breed_group.dtypes)
+
 
 
 ################################################
@@ -353,8 +351,7 @@ exercise_needs,
 potential_for_playfulness) VALUES 
 (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
-to_SQL_breeds_groups = """INSERT INTO `dogs_scraping`.`breeds_group` (dog_breed_group) VALUES 
-(%s)"""
+to_SQL_breeds_groups = """INSERT INTO `dogs_scraping`.`breeds_group` (dog_breed_group) VALUES (?,)"""
 ################################################
 # CYCLE THROUGH DATAFRAME AND SAVE ROWS TO MYSQL
 for index, row in dogs_df.iterrows():
@@ -365,7 +362,7 @@ for index, row in dogs_df.iterrows():
                          row['image'],
                          row['height'],
                          row['weight'],
-                         row['life_span']))
+                         row['life_span'],))
         cnx.commit()
     except:
         print("MISSING SOMETHING!")
@@ -401,7 +398,7 @@ for index, row in adaptability_df.iterrows():
                         row['energy_level'],
                         row['intensity'],
                         row['exercise_needs'],
-                        row['potential_for_playfulness']))
+                        row['potential_for_playfulness'],))
 
         cnx.commit()
     except:
@@ -412,16 +409,25 @@ for index, row in adaptability_df.iterrows():
 print("INSERTING OPERATION: SECOND TABLE DONE!")
 
 
-for index, row in dogs_breed_group.iteritems():
-    try:
-        cursor.execute(to_SQL_breeds_groups,
-                       (row['dog_breed_group']))
-        cnx.commit()
-    except:
-        print("ROW NOT SAVED!")
-        print(row)
-        print("INDEX: ", index)
-        continue
+
+#####################################################
+# TRY USING THIS INSTEAD:
+
+# TODO
+## https://stackoverflow.com/questions/59899579/not-all-parameters-were-used-in-the-sql-statement-using-dataframe-to-sql
+
+dogs_breed_group.to_sql(con=cnx, name='breeds_group', if_exists='append')
+#
+# for index, row in dogs_breed_group.iterrows():
+#     try:
+#         cursor.execute(to_SQL_breeds_groups,
+#                        (row,))
+#         cnx.commit()
+#     except:
+#         print("ROW NOT SAVED!")
+#         print(row)
+#         print("INDEX: ", index)
+#         continue
 
 print("INSERTING OPERATION: THIRD TABLE DONE!")
 ################################################################################################
