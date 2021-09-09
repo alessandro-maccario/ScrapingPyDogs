@@ -116,6 +116,20 @@ TABLES['adaptability'] = (
     PRIMARY KEY (`id`)
     ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARACTER SET = utf8 ''')
 
+TABLES['breeds_group'] = (
+    ''' CREATE TABLE IF NOT EXISTS `dogs_scraping`.`breeds_group` (
+        `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `dog_breed_group` VARCHAR(100) NOT NULL,
+        PRIMARY KEY (`id`),
+        UNIQUE INDEX `dog_breed_group` (`dog_breed_group` ASC)
+        ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARACTER SET = utf8 ''')
+
+
+#
+# update"""UPDATE `dogs_scraping`.`breeds`, `dogs_scraping`.`adaptability`
+# SET `breeds`.`adaptability_id` = `adaptability`.`id`
+# WHERE `breeds`.`adaptability_id` = `adaptability`.`id`"""
+
 ##################################################
 # FOR EACH TABLE IN TABLES CREATE TABLE AND HANDLING EXCEPTION
 for table_name in TABLES:
@@ -132,7 +146,6 @@ for table_name in TABLES:
     else:
         print("OK")
         print("--- --- --- --- --- --- --- --- --- ---")
-
 ################################################
 
 # TODO
@@ -154,8 +167,6 @@ for table_name in TABLES:
 csv_data = pd.read_csv('out.csv',
                        encoding = 'utf8',
                        na_filter=False)
-
-csv_data.fillna('NaN', inplace=True)
 ################################################
 # "BREEDS" TABLE
 # TAKE SINGLE COLUMNS FOR "BREEDS" TABLE
@@ -295,12 +306,18 @@ adaptability_df = pd.concat([
     dogs_exercise_needs,
     dogs_potential_playfulness], axis=1)
 
-# ADD THREE VALUE THAT, AT FIRST, THE PREVIOUS CODE FAIL TO RECOGNISE EVEN
+# ADD THREE VALUE AT HAND THAT, AT FIRST, THE PREVIOUS CODE FAIL TO RECOGNISE EVEN
 # THAT THEY WERE THERE IN THE CSV FILE.
 # FIRST VALUE = ROW INDEX NUMBER; SECOND VALUE = COLUMN; VALUE AFTER EQUAL SIGN = THE VALUE TO INSERT IN DATASET
 adaptability_df.at[163,'potential_for_playfulness'] = 4
 adaptability_df.at[237,'potential_for_playfulness'] = 5
 adaptability_df.at[317,'potential_for_playfulness'] = 5
+################################################
+# BREED_GROUP TABLE
+# TAKE SINGLE COLUMN FOR "BREED_GROUP" TABLE
+dogs_breed_group = csv_data.iloc[:,29]
+
+
 ################################################
 # QUERIES
 to_SQL_breeds = """INSERT INTO `dogs_scraping`.`breeds` (name, description, url_image, height, weight, life_span) VALUES 
@@ -333,7 +350,11 @@ wanderlust_potential,
 energy_level,
 intensity, 
 exercise_needs, 
-potential_for_playfulness) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+potential_for_playfulness) VALUES 
+(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+
+to_SQL_breeds_groups = """INSERT INTO `dogs_scraping`.`breeds_group` (dog_breed_group) VALUES 
+(%s)"""
 ################################################
 # CYCLE THROUGH DATAFRAME AND SAVE ROWS TO MYSQL
 for index, row in dogs_df.iterrows():
@@ -390,10 +411,23 @@ for index, row in adaptability_df.iterrows():
 
 print("INSERTING OPERATION: SECOND TABLE DONE!")
 
-################################################################################################
 
+for index, row in dogs_breed_group.iteritems():
+    try:
+        cursor.execute(to_SQL_breeds_groups,
+                       (row['dog_breed_group']))
+        cnx.commit()
+    except:
+        print("ROW NOT SAVED!")
+        print(row)
+        print("INDEX: ", index)
+        continue
+
+print("INSERTING OPERATION: THIRD TABLE DONE!")
+################################################################################################
 cursor.close()
 
 # TODO
-## NEED TO ADD LAST TABLE WITH VALUES
+## NEED TO ADD LAST TABLE WITH VALUES: SAME PROBLEMS FOUND. VALUES NOT INSERTED
+## AND THEN TO REFERENCES TABLES
 
