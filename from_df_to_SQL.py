@@ -217,3 +217,7 @@ print("INSERTING OPERATION: THIRD TABLE DONE!")
 ################################################
 # CLOSE THE CURSOR
 cursor.close()
+
+
+# TODO
+## INSERT PROJECT DOCUMENTATION MARKDOWN HERE IN PYCHARM
