@@ -1,6 +1,8 @@
 import csv
 import pandas as pd
+import pymysql
 import mysql.connector
+from sqlalchemy import create_engine
 from mysql.connector import errorcode
 
 # CONNECT TO MYSQL
@@ -351,7 +353,7 @@ exercise_needs,
 potential_for_playfulness) VALUES 
 (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
-to_SQL_breeds_groups = """INSERT INTO `dogs_scraping`.`breeds_group` (dog_breed_group) VALUES (?,)"""
+to_SQL_breeds_groups = """INSERT INTO `dogs_scraping`.`breeds_group` (`dog_breed_group`) VALUES (?,)"""
 ################################################
 # CYCLE THROUGH DATAFRAME AND SAVE ROWS TO MYSQL
 for index, row in dogs_df.iterrows():
@@ -408,32 +410,28 @@ for index, row in adaptability_df.iterrows():
 
 print("INSERTING OPERATION: SECOND TABLE DONE!")
 
-
-
 #####################################################
 # TRY USING THIS INSTEAD:
 
 # TODO
 ## https://stackoverflow.com/questions/59899579/not-all-parameters-were-used-in-the-sql-statement-using-dataframe-to-sql
 
-dogs_breed_group.to_sql(con=cnx, name='breeds_group', if_exists='append')
-#
-# for index, row in dogs_breed_group.iterrows():
-#     try:
-#         cursor.execute(to_SQL_breeds_groups,
-#                        (row,))
-#         cnx.commit()
-#     except:
-#         print("ROW NOT SAVED!")
-#         print(row)
-#         print("INDEX: ", index)
-#         continue
+# user = 'root'
+# passw = 'tiger'
+# host =  'localhost'  # either localhost or ip e.g. '172.17.0.2' or hostname address
+# port = 3306
+# database = 'breeds_group'
+
+# engine = create_engine('mysql+pymysql://' + user + ':' + passw + '@' + host + ':' + str(port) + '/' + database , echo=False)
+engine = create_engine('mysql+pymysql://root:tiger@localhost:3306/dogs_scraping', echo=False)
+
+
+dogs_breed_group.to_sql(name='breeds_group', con=engine, if_exists = 'replace', index=False)
+cursor.execute("""ALTER TABLE `breeds_group` ADD `id` INT PRIMARY KEY AUTO_INCREMENT;""")
 
 print("INSERTING OPERATION: THIRD TABLE DONE!")
 ################################################################################################
 cursor.close()
 
 # TODO
-## NEED TO ADD LAST TABLE WITH VALUES: SAME PROBLEMS FOUND. VALUES NOT INSERTED
-## AND THEN TO REFERENCES TABLES
-
+## TRY TO CREATE AGAIN THE PREVIOUS TABLES WITH THIS SIMPLEST METHOD TO_SQL!!!
