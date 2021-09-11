@@ -10,6 +10,19 @@ from bs4 import BeautifulSoup
 
 class Dog:
 
+    """
+        Dog class to instanciate and set all the Dogs' attributes
+        to be taken from the webpage.
+        It contains:
+        - BASIC FIELDS;
+        - ADAPTABILITY FIELDS;
+        - ALL AROUND FRIENDLINESS FIELDS;
+        - HEALTH AND GROOMING NEEDS FIELDS;
+        - TRAINABILITY FIELDS;
+        - PHYSICAL NEEDS FIELDS;
+        - VITAL STATS FIELDS.
+    """
+
     def __init__(self, name):
         self.name = name  # instance variable unique to each instance
 

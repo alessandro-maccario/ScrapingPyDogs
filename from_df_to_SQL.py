@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pandas as pd
 import mysql.connector
 from sqlalchemy import create_engine
