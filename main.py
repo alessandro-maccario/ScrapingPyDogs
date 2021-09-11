@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup
 
 #####################################################################
 # CREATE CLASS DOG
+
+
 class Dog:
 
     def __init__(self, name):
@@ -115,17 +117,20 @@ class Dog:
         self.life_span = life_span
 
 #####################################################################
-
 # CONNECT TO THE WEB SITE AND USE USER-AGENT TO FAKE THE CONNECTION BY A HUMAN #####
+
+
 def get_beautiful_soup(url):
     # Open the URL as Browser, not as python urllib
     page = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
     infile = urllib.request.urlopen(page).read()
     # data = infile.decode('utf-8')
-    data = infile.decode('ascii','ignore')
+    data = infile.decode('ascii', 'ignore')
     return BeautifulSoup(data, 'lxml', exclude_encodings=["ISO-8859-7"])
 
 # FUNCTION TO GET DOG'S NAME
+
+
 def get_dogs_name(soup):
     names = []
     for name in soup.find_all("a", class_="list-item-title"):
@@ -136,6 +141,8 @@ def get_dogs_name(soup):
 
 #####################################################################
 # BUSINESS LOGIC
+
+
 soup = get_beautiful_soup("https://dogtime.com/dog-breeds/profiles")
 names = get_dogs_name(soup)
 
@@ -166,7 +173,7 @@ for index, name in enumerate(names):
         try:
             # GET EACH PAGE WITH A DIFFERENT DOG'S NAME
             soup = get_beautiful_soup(f"https://dogtime.com/dog-breeds/{name.replace(' ', '-')}")
-        except:
+        except ValueError:
             not_find.append(name)
             continue
 
@@ -217,133 +224,133 @@ for index, name in enumerate(names):
     # 1. ADAPTABILITY
     try:
         dog.set_adapts_well_to_apartment_living(stars_list[0])
-    except:
+    except ValueError:
         dog.set_adapts_well_to_apartment_living("")
     try:
         dog.set_good_for_novice_owners(stars_list[1])
-    except:
+    except ValueError:
         dog.set_good_for_novice_owners("")
     try:
         dog.set_sensitivity_level(stars_list[2])
-    except:
+    except ValueError:
         dog.set_sensitivity_level("")
     try:
         dog.set_tolerates_being_alone(stars_list[3])
-    except:
+    except ValueError:
         dog.set_tolerates_being_alone("")
     try:
         dog.set_tolerates_cold_weather(stars_list[4])
-    except:
+    except ValueError:
         dog.set_tolerates_cold_weather("")
     try:
         dog.set_tolerates_hot_weather(stars_list[5])
-    except:
+    except ValueError:
         dog.set_tolerates_hot_weather("")
 
     # 2. ALL ROUND FRIENDLINESS
     try:
         dog.set_affectionate_with_family(stars_list[6])
-    except:
+    except ValueError:
         dog.set_affectionate_with_family("")
     try:
         dog.set_kid_friendly(stars_list[7])
-    except:
+    except ValueError:
         dog.set_kid_friendly("")
     try:
         dog.set_dog_friendly(stars_list[8])
-    except:
+    except ValueError:
         dog.set_dog_friendly("")
     try:
         dog.set_friendly_toward_strangers(stars_list[9])
-    except:
+    except ValueError:
         dog.set_friendly_toward_strangers("")
 
     # 3. HEALTH AND GROOMING NEEDS
     try:
         dog.set_amount_of_shedding(stars_list[10])
-    except:
+    except ValueError:
         dog.set_amount_of_shedding("")
     try:
         dog.set_drooling_potential(stars_list[11])
-    except:
+    except ValueError:
         dog.set_drooling_potential("")
     try:
         dog.set_easy_to_groom(stars_list[12])
-    except:
+    except ValueError:
         dog.set_easy_to_groom("")
     try:
         dog.set_general_health(stars_list[13])
-    except:
+    except ValueError:
         dog.set_general_health("")
     try:
         dog.set_potential_for_weight_gain(stars_list[14])
-    except:
+    except ValueError:
         dog.set_potential_for_weight_gain("")
     try:
         dog.set_size(stars_list[15])
-    except:
+    except ValueError:
         dog.set_size("")
 
     # 4. TRAINABILITY
     try:
         dog.set_easy_to_train(stars_list[16])
-    except:
+    except ValueError:
         dog.set_easy_to_train("")
     try:
         dog.set_intelligence(stars_list[17])
-    except:
+    except ValueError:
         dog.set_intelligence("")
     try:
         dog.set_potential_for_mouthiness(stars_list[18])
-    except:
+    except ValueError:
         dog.set_potential_for_mouthiness("")
     try:
         dog.set_prey_drive(stars_list[19])
-    except:
+    except ValueError:
         dog.set_prey_drive("")
     try:
         dog.set_tendency_to_bark_or_howl(stars_list[20])
-    except:
+    except ValueError:
         dog.set_tendency_to_bark_or_howl("")
     try:
         dog.set_wanderlust_potential(stars_list[21])
-    except:
+    except ValueError:
         dog.set_wanderlust_potential("")
 
     # 5. PHYSICAL NEEDS
     try:
         dog.set_energy_level(stars_list[22])
-    except:
+    except ValueError:
         dog.set_energy_level("")
     try:
         dog.set_intensity(stars_list[23])
-    except:
+    except ValueError:
         dog.set_intensity("")
     try:
         dog.set_exercise_needs(stars_list[24])
-    except:
+    except ValueError:
         dog.set_exercise_needs("")
     try:
         dog.set_potential_for_playfulness(stars_list[25])
-    except:
+    except ValueError:
         dog.set_potential_for_playfulness("")
 
     # VITAL STATS
     try:
         dog.set_dog_breed_group(vital_stats_final[0])
-    except:
+    except ValueError:
         dog.set_dog_breed_group("")
     try:
         dog.set_height(vital_stats_final[1])
-    except:
+    except ValueError:
         dog.set_height("")
     try:
         dog.set_weight(vital_stats_final[2])
-    except:
+    except ValueError:
         dog.set_weight("")
     try:
         dog.set_life_span(vital_stats_final[3])
-    except:
+    except ValueError:
         dog.set_life_span("")
 
     # APPEND TO FINAL LIST: EACH ELEMENT IN THIS LIST WILL BE OUR ROW FOR EACH DOG
@@ -353,14 +360,14 @@ for index, name in enumerate(names):
 
 #####################################################################
 # # WRITING RESULTS TO CSV
-with open('out.csv','w', newline='') as f:
+with open('out.csv', 'w', newline='') as f:
     # fieldnames lists the headers for the csv.
-    w = csv.DictWriter(f,fieldnames=vars(dogs[0]))
+    w = csv.DictWriter(f, fieldnames=vars(dogs[0]))
     w.writeheader()
 
     for obj in dogs:
         # Build a dictionary of the member names and values...
-        w.writerow({k:getattr(obj,k) for k in vars(obj)})
+        w.writerow({k: getattr(obj, k) for k in vars(obj)})
 
 
 # CONVERT TO XLSX
@@ -368,15 +375,7 @@ df = pd.read_csv("out.csv")
 df.to_excel("out.xlsx", index=False)
 #####################################################################
 
-
 #####################################################################
-# TODO:
-## TREAT SINGLE PAGES OF THE DOGS NOT FOUND SEPARATELY
+# TREAT SINGLE PAGES OF THE DOGS NOT FOUND SEPARATELY
 print("Dogs not found: ", not_find)
-#####################################################################
-
-
-#####################################################################
-# TODO:
-## MYSQL INSERT OR CREATE A NEW SQL DATABASE FROM SCRATCH WITH PYTHON
 #####################################################################
