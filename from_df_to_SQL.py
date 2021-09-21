@@ -67,7 +67,7 @@ TABLES['adaptability'] = (
 TABLES['breeds_group'] = (
     ''' CREATE TABLE IF NOT EXISTS `dogs_scraping`.`breeds_group` (
         `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-        `dog_breed_group` VARCHAR(200) NOT NULL,
+        `dog_breed_group` VARCHAR(200) NOT NULL UNIQUE,
         PRIMARY KEY (`id`),
         UNIQUE INDEX `dog_breed_group` (`dog_breed_group` ASC)
         ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARACTER SET = utf8 ''')
@@ -84,12 +84,18 @@ TABLES['breeds'] = (
      `life_span` VARCHAR(100) NULL DEFAULT NULL,
      PRIMARY KEY (`id`),
      UNIQUE INDEX `name` (`name` ASC),
-     INDEX `fk_breed_in_group_idx` (`id` ASC),
-     INDEX `fk_breeds_adaptability1_idx` (`id` ASC),
-     CONSTRAINT `fk_breed_in_group` FOREIGN KEY (`id`)
-       REFERENCES `dogs_scraping`.`breeds_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-     CONSTRAINT `fk_breeds_adaptability1` FOREIGN KEY (`id`)
-       REFERENCES `dogs_scraping`.`adaptability` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+     INDEX `fk_breed_in_group_idx` (`id_breed_group` ASC),
+     INDEX `fk_breeds_adaptability1_idx` (`adaptability_id` ASC),
+     CONSTRAINT `fk_breed_in_group`
+        FOREIGN KEY (`id_breed_group`)
+        REFERENCES `dogs`.`breeds_group` (`id`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION,
+     CONSTRAINT `fk_breeds_adaptability1`
+        FOREIGN KEY (`adaptability_id`)
+        REFERENCES `dogs`.`adaptability` (`id`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
     ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARACTER SET = utf8 ''')
 
 ##################################################

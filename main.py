@@ -152,26 +152,41 @@ def get_dogs_name(soup):
     # CONVERT TO LOWER CASE, REQUIRED TO ADD THE DOG'S NAME TO THE URL
     return [x.lower() for x in names]
 
-#####################################################################
-# BUSINESS LOGIC
+
+def get_description_from_top_page(intro):
+    description_elements = intro.find_all('p')[:-1]
+    final_description = ''
+    for sentence in description_elements:
+        final_description += sentence.text
+    return final_description
 
 
-soup = get_beautiful_soup("https://dogtime.com/dog-breeds/profiles")
-names = get_dogs_name(soup)
+def get_text_from_stars(stars):
+    stars_list = []
+    for star in stars:
+        stars_list.append(star.text)
+    return stars_list
 
-print(names)
-print("LENGTH OF THE DOGS LIST: ", len(names))
 
-# LIST OF ALL DOGS
-dogs = []
-# IF DOGS NOT FOUND (BECAUSE DIFFERENT LINK) INSERT IN THIS LIST
-not_find = []
+def get_text_from_vital_stats(vital_stats):
+    vital_stats_list = []
+    vital_stats_final = []
+    for vital_field in vital_stats:
+        vital_stats_list.append(vital_field.text)
+        vital_stats_list = [x for x in vital_stats_list if x]
 
-#####################################################################
-# DOWNLOADING DATA
+    for element in vital_stats_list:
+        # FIND THE INDEX OF ":"
+        i = element.index(":")
+        # USE THAT INDEX TO FIND THE SUBSTRING TO STRIP
+        element = element[i + 1:].strip()
+        vital_stats_final.append(element)
 
-for index, name in enumerate(names):
-    # DEALING WITH DIFFERENT URL DOGS NAME
+    return vital_stats_final
+
+
+# DEALING WITH DIFFERENT URL DOGS NAME
+def get_soup_dog(name):
     if name == "korean jindo dog":
         soup = get_beautiful_soup("https://dogtime.com/dog-breeds/jindo")
     elif name == "mutt (mixed)":
@@ -183,49 +198,58 @@ for index, name in enumerate(names):
     elif name == "australian shepherd husky":
         soup = get_beautiful_soup("https://dogtime.com/dog-breeds/australian-shepherd-husky")
     else:
-        try:
-            # GET EACH PAGE WITH A DIFFERENT DOG'S NAME
-            soup = get_beautiful_soup(f"https://dogtime.com/dog-breeds/{name.replace(' ', '-')}")
-        except ValueError:
-            not_find.append(name)
-            continue
+        # try:
+        # GET EACH PAGE WITH A DIFFERENT DOG'S NAME
+        soup = get_beautiful_soup(f"https://dogtime.com/dog-breeds/{name.replace(' ', '-')}")
+        # except ValueError:
+        #     not_find.append(name)
+        #     continue
+    return soup
+
+#####################################################################
+# BUSINESS LOGIC
+
+soup = get_beautiful_soup("https://dogtime.com/dog-breeds/profiles")
+names = get_dogs_name(soup)
+
+print(names)
+print("LENGTH OF THE DOGS LIST: ", len(names))
+
+# LIST OF ALL DOGS
+dogs = []
+
+#####################################################################
+# DOWNLOADING DATA
+
+for index, name in enumerate(names):
+
+    # Get dog name (soup)
+    soup = get_soup_dog(name)
 
     # FIND THE RIGHT CLASS WHERE TO FIND INTRO, IMAGE
     intro = soup.find("div", {"class": "breeds-single-intro"})
     image = intro.find('img')['data-lazy-src']
 
     # GET DESCRIPTION FROM THE TOP OF THE PAGE
-    description_elements = intro.find_all('p')[:-1]
-    final_description = ''
-    for sentence in description_elements:
-        final_description += sentence.text
+    final_description = get_description_from_top_page(intro)
 
     # GET THE STARS FROM THE DOG'S CHARACTERISTICS OF THE PAGE
     stars = soup.find_all("div", {"class": "characteristic-star-block"})
-    stars_list = []
-    for star in stars:
-        stars_list.append(star.text)
-        stars_list = [x for x in stars_list if x]
+    stars_list = get_text_from_stars(stars)
 
     # GET VITAL STATS LIST
     vital_stats = soup.find_all("div", {"class": "vital-stat-box"})
-
-    vital_stats_list = []
-    for vital_field in vital_stats:
-        vital_stats_list.append(vital_field.text)
-        vital_stats_list = [x for x in vital_stats_list if x]
-
-    vital_stats_final = []
-    for element in vital_stats_list:
-        # FIND THE INDEX OF ":"
-        i = element.index(":")
-        # USE THAT INDEX TO FIND THE SUBSTRING TO STRIP
-        element = element[i + 1:].strip()
-        vital_stats_final.append(element)
+    vital_stats_list = get_text_from_vital_stats(vital_stats)
 
     # CREATE DOG OBJECT
     dog = Dog(name)
     print(index, dog.name)
+
+    print("DESC:", final_description)
+    print("STARS:", stars_list)
+    print("VITAL:", vital_stats_list)
+    print("===================================================")
+    continue
 
     # TAKE IMPORTANT ELEMENTS OF THE PAGE
     # INITIAL DESCRIPTION
@@ -386,9 +410,4 @@ with open('out.csv', 'w', newline='') as f:
 # CONVERT TO XLSX
 df = pd.read_csv("out.csv")
 df.to_excel("out.xlsx", index=False)
-#####################################################################
-
-#####################################################################
-# TREAT SINGLE PAGES OF THE DOGS NOT FOUND SEPARATELY
-print("Dogs not found: ", not_find)
 #####################################################################
