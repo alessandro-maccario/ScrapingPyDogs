@@ -27,7 +27,7 @@ ipython-genutils==0.2.0
 jdcal==1.4.1
 jsonschema==3.2.0
 jupyter-core==4.7.1
-lxml==4.6.2
+lxml==4.6.3
 multidict==5.1.0
 mysql-connector-python==8.0.26
 mysql-connector-python-rf==2.2.2
@@ -60,7 +60,7 @@ soupsieve==2.2
 SQLAlchemy==1.4.23
 traitlets==5.1.0
 typing-extensions==3.7.4.3
-urllib3==1.26.3
+urllib3==1.26.5
 virtualenv==20.7.2
 webencodings==0.5.1
 xlrd==2.0.1
