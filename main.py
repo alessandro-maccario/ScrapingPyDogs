@@ -165,6 +165,8 @@ def get_text_from_stars(stars):
     stars_list = []
     for star in stars:
         stars_list.append(star.text)
+    # USED THE FOLLOWING LIST COMPREHENSION TO FILTER THOSE VALUES THAT ARE EMPTY STRING
+    stars_list = [x for x in stars_list if x]
     return stars_list
 
 
@@ -173,6 +175,7 @@ def get_text_from_vital_stats(vital_stats):
     vital_stats_final = []
     for vital_field in vital_stats:
         vital_stats_list.append(vital_field.text)
+        # USED THE FOLLOWING LIST COMPREHENSION TO FILTER THOSE VALUES THAT ARE EMPTY STRING
         vital_stats_list = [x for x in vital_stats_list if x]
 
     for element in vital_stats_list:
@@ -245,11 +248,11 @@ for index, name in enumerate(names):
     dog = Dog(name)
     print(index, dog.name)
 
-    print("DESC:", final_description)
-    print("STARS:", stars_list)
-    print("VITAL:", vital_stats_list)
+    print("DESC TEXT:", final_description)
+    print("STARS LIST:", stars_list)
+    print("VITAL LIST:", vital_stats_list)
     print("===================================================")
-    continue
+    # continue
 
     # TAKE IMPORTANT ELEMENTS OF THE PAGE
     # INITIAL DESCRIPTION
@@ -257,136 +260,177 @@ for index, name in enumerate(names):
     # IMAGE
     dog.set_image(image)
 
-    # GET ALL THE DOGS CHARACTERISTICS
-    # 1. ADAPTABILITY
-    try:
-        dog.set_adapts_well_to_apartment_living(stars_list[0])
-    except ValueError:
-        dog.set_adapts_well_to_apartment_living("")
-    try:
-        dog.set_good_for_novice_owners(stars_list[1])
-    except ValueError:
-        dog.set_good_for_novice_owners("")
-    try:
-        dog.set_sensitivity_level(stars_list[2])
-    except ValueError:
-        dog.set_sensitivity_level("")
-    try:
-        dog.set_tolerates_being_alone(stars_list[3])
-    except ValueError:
-        dog.set_tolerates_being_alone("")
-    try:
-        dog.set_tolerates_cold_weather(stars_list[4])
-    except ValueError:
-        dog.set_tolerates_cold_weather("")
-    try:
-        dog.set_tolerates_hot_weather(stars_list[5])
-    except ValueError:
-        dog.set_tolerates_hot_weather("")
+    # ###########################
+    # FUNCTION FOR CHARACTERISTICS
 
-    # 2. ALL ROUND FRIENDLINESS
-    try:
-        dog.set_affectionate_with_family(stars_list[6])
-    except ValueError:
-        dog.set_affectionate_with_family("")
-    try:
-        dog.set_kid_friendly(stars_list[7])
-    except ValueError:
-        dog.set_kid_friendly("")
-    try:
-        dog.set_dog_friendly(stars_list[8])
-    except ValueError:
-        dog.set_dog_friendly("")
-    try:
-        dog.set_friendly_toward_strangers(stars_list[9])
-    except ValueError:
-        dog.set_friendly_toward_strangers("")
+    def get_characteristics(stars_list):
+        try:
+            # 1. ADAPTABILITY
+            dog.set_adapts_well_to_apartment_living(stars_list[0])
+            dog.set_good_for_novice_owners(stars_list[1])
+            dog.set_sensitivity_level(stars_list[2])
+            dog.set_tolerates_being_alone(stars_list[3])
+            dog.set_tolerates_cold_weather(stars_list[4])
+            dog.set_tolerates_hot_weather(stars_list[5])
+            # 2. ALL ROUND FRIENDLINESS
+            dog.set_affectionate_with_family(stars_list[6])
+            dog.set_kid_friendly(stars_list[7])
+            dog.set_dog_friendly(stars_list[8])
+            dog.set_friendly_toward_strangers(stars_list[9])
+            # 3. HEALTH AND GROOMING NEEDS
+            dog.set_amount_of_shedding(stars_list[10])
+            dog.set_drooling_potential(stars_list[11])
+            dog.set_easy_to_groom(stars_list[12])
+            dog.set_general_health(stars_list[13])
+            dog.set_potential_for_weight_gain(stars_list[14])
+            dog.set_size(stars_list[15])
+            # 4. TRAINABILITY
+            dog.set_easy_to_train(stars_list[16])
+            dog.set_intelligence(stars_list[17])
+            dog.set_potential_for_mouthiness(stars_list[18])
+            dog.set_prey_drive(stars_list[19])
+            dog.set_tendency_to_bark_or_howl(stars_list[20])
+            dog.set_wanderlust_potential(stars_list[21])
+            # 5. PHYSICAL NEEDS
+            dog.set_energy_level(stars_list[22])
+            dog.set_intensity(stars_list[23])
+            dog.set_exercise_needs(stars_list[24])
+            dog.set_potential_for_playfulness(stars_list[25])
+        except:
+            print("Error")
 
-    # 3. HEALTH AND GROOMING NEEDS
-    try:
-        dog.set_amount_of_shedding(stars_list[10])
-    except ValueError:
-        dog.set_amount_of_shedding("")
-    try:
-        dog.set_drooling_potential(stars_list[11])
-    except ValueError:
-        dog.set_drooling_potential("")
-    try:
-        dog.set_easy_to_groom(stars_list[12])
-    except ValueError:
-        dog.set_easy_to_groom("")
-    try:
-        dog.set_general_health(stars_list[13])
-    except ValueError:
-        dog.set_general_health("")
-    try:
-        dog.set_potential_for_weight_gain(stars_list[14])
-    except ValueError:
-        dog.set_potential_for_weight_gain("")
-    try:
-        dog.set_size(stars_list[15])
-    except ValueError:
-        dog.set_size("")
+    # ###########################
 
-    # 4. TRAINABILITY
-    try:
-        dog.set_easy_to_train(stars_list[16])
-    except ValueError:
-        dog.set_easy_to_train("")
-    try:
-        dog.set_intelligence(stars_list[17])
-    except ValueError:
-        dog.set_intelligence("")
-    try:
-        dog.set_potential_for_mouthiness(stars_list[18])
-    except ValueError:
-        dog.set_potential_for_mouthiness("")
-    try:
-        dog.set_prey_drive(stars_list[19])
-    except ValueError:
-        dog.set_prey_drive("")
-    try:
-        dog.set_tendency_to_bark_or_howl(stars_list[20])
-    except ValueError:
-        dog.set_tendency_to_bark_or_howl("")
-    try:
-        dog.set_wanderlust_potential(stars_list[21])
-    except ValueError:
-        dog.set_wanderlust_potential("")
-
-    # 5. PHYSICAL NEEDS
-    try:
-        dog.set_energy_level(stars_list[22])
-    except ValueError:
-        dog.set_energy_level("")
-    try:
-        dog.set_intensity(stars_list[23])
-    except ValueError:
-        dog.set_intensity("")
-    try:
-        dog.set_exercise_needs(stars_list[24])
-    except ValueError:
-        dog.set_exercise_needs("")
-    try:
-        dog.set_potential_for_playfulness(stars_list[25])
-    except ValueError:
-        dog.set_potential_for_playfulness("")
+    # # GET ALL THE DOGS CHARACTERISTICS
+    # # 1. ADAPTABILITY
+    # try:
+    #     dog.set_adapts_well_to_apartment_living(stars_list[0])
+    # except ValueError:
+    #     dog.set_adapts_well_to_apartment_living("")
+    # try:
+    #     dog.set_good_for_novice_owners(stars_list[1])
+    # except ValueError:
+    #     dog.set_good_for_novice_owners("")
+    # try:
+    #     dog.set_sensitivity_level(stars_list[2])
+    # except ValueError:
+    #     dog.set_sensitivity_level("")
+    # try:
+    #     dog.set_tolerates_being_alone(stars_list[3])
+    # except ValueError:
+    #     dog.set_tolerates_being_alone("")
+    # try:
+    #     dog.set_tolerates_cold_weather(stars_list[4])
+    # except ValueError:
+    #     dog.set_tolerates_cold_weather("")
+    # try:
+    #     dog.set_tolerates_hot_weather(stars_list[5])
+    # except ValueError:
+    #     dog.set_tolerates_hot_weather("")
+    #
+    # # 2. ALL ROUND FRIENDLINESS
+    # try:
+    #     dog.set_affectionate_with_family(stars_list[6])
+    # except ValueError:
+    #     dog.set_affectionate_with_family("")
+    # try:
+    #     dog.set_kid_friendly(stars_list[7])
+    # except ValueError:
+    #     dog.set_kid_friendly("")
+    # try:
+    #     dog.set_dog_friendly(stars_list[8])
+    # except ValueError:
+    #     dog.set_dog_friendly("")
+    # try:
+    #     dog.set_friendly_toward_strangers(stars_list[9])
+    # except ValueError:
+    #     dog.set_friendly_toward_strangers("")
+    #
+    # # 3. HEALTH AND GROOMING NEEDS
+    # try:
+    #     dog.set_amount_of_shedding(stars_list[10])
+    # except ValueError:
+    #     dog.set_amount_of_shedding("")
+    # try:
+    #     dog.set_drooling_potential(stars_list[11])
+    # except ValueError:
+    #     dog.set_drooling_potential("")
+    # try:
+    #     dog.set_easy_to_groom(stars_list[12])
+    # except ValueError:
+    #     dog.set_easy_to_groom("")
+    # try:
+    #     dog.set_general_health(stars_list[13])
+    # except ValueError:
+    #     dog.set_general_health("")
+    # try:
+    #     dog.set_potential_for_weight_gain(stars_list[14])
+    # except ValueError:
+    #     dog.set_potential_for_weight_gain("")
+    # try:
+    #     dog.set_size(stars_list[15])
+    # except ValueError:
+    #     dog.set_size("")
+    #
+    # # 4. TRAINABILITY
+    # try:
+    #     dog.set_easy_to_train(stars_list[16])
+    # except ValueError:
+    #     dog.set_easy_to_train("")
+    # try:
+    #     dog.set_intelligence(stars_list[17])
+    # except ValueError:
+    #     dog.set_intelligence("")
+    # try:
+    #     dog.set_potential_for_mouthiness(stars_list[18])
+    # except ValueError:
+    #     dog.set_potential_for_mouthiness("")
+    # try:
+    #     dog.set_prey_drive(stars_list[19])
+    # except ValueError:
+    #     dog.set_prey_drive("")
+    # try:
+    #     dog.set_tendency_to_bark_or_howl(stars_list[20])
+    # except ValueError:
+    #     dog.set_tendency_to_bark_or_howl("")
+    # try:
+    #     dog.set_wanderlust_potential(stars_list[21])
+    # except ValueError:
+    #     dog.set_wanderlust_potential("")
+    #
+    # # 5. PHYSICAL NEEDS
+    # try:
+    #     dog.set_energy_level(stars_list[22])
+    # except ValueError:
+    #     dog.set_energy_level("")
+    # try:
+    #     dog.set_intensity(stars_list[23])
+    # except ValueError:
+    #     dog.set_intensity("")
+    # try:
+    #     dog.set_exercise_needs(stars_list[24])
+    # except ValueError:
+    #     dog.set_exercise_needs("")
+    # try:
+    #     dog.set_potential_for_playfulness(stars_list[25])
+    # except ValueError:
+    #     dog.set_potential_for_playfulness("")
 
     # VITAL STATS
     try:
-        dog.set_dog_breed_group(vital_stats_final[0])
+        dog.set_dog_breed_group(vital_stats_list[0])
     except ValueError:
         dog.set_dog_breed_group("")
     try:
-        dog.set_height(vital_stats_final[1])
+        dog.set_height(vital_stats_list[1])
     except ValueError:
         dog.set_height("")
     try:
-        dog.set_weight(vital_stats_final[2])
+        dog.set_weight(vital_stats_list[2])
     except ValueError:
         dog.set_weight("")
     try:
-        dog.set_life_span(vital_stats_final[3])
+        dog.set_life_span(vital_stats_list[3])
     except ValueError:
         dog.set_life_span("")
 
@@ -399,7 +443,7 @@ for index, name in enumerate(names):
 # # WRITING RESULTS TO CSV
 with open('out.csv', 'w', newline='') as f:
     # fieldnames lists the headers for the csv.
-    w = csv.DictWriter(f, fieldnames=vars(dogs[0]))
+    w = csv.DictWriter(f, fieldnames=vars(dogs[1]))
     w.writeheader()
 
     for obj in dogs:
