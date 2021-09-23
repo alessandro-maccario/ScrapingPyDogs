@@ -1,14 +1,238 @@
 # -*- coding: utf-8 -*-
-from dog_object import *
+import csv
+import pandas as pd
+import urllib.request
+from bs4 import BeautifulSoup
+
+#####################################################################
+# CREATE CLASS DOG
 
 
+class Dog:
+
+    """
+        Dog class to instanciate and set all the Dogs' attributes
+        to be taken from the webpage.
+        It contains:
+        - BASIC FIELDS;
+        - ADAPTABILITY FIELDS;
+        - ALL AROUND FRIENDLINESS FIELDS;
+        - HEALTH AND GROOMING NEEDS FIELDS;
+        - TRAINABILITY FIELDS;
+        - PHYSICAL NEEDS FIELDS;
+        - VITAL STATS FIELDS.
+    """
+
+    def __init__(self, name):
+        self.name = name  # instance variable unique to each instance
+
+    # SET BASIC FIELDS
+    def set_description(self, description):
+        self.description = description
+
+    def set_image(self, image):
+        self.image = image
+
+    # SET ADAPTABILITY FIELDS
+    def set_adapts_well_to_apartment_living(self, adapts_well_to_apartment_living):
+        self.adapts_well_to_apartment_living = adapts_well_to_apartment_living
+
+    def set_good_for_novice_owners(self, good_for_novice_owners):
+        self.good_for_novice_owners = good_for_novice_owners
+
+    def set_sensitivity_level(self, sensitivity_level):
+        self.sensitivity_level = sensitivity_level
+
+    def set_tolerates_being_alone(self, tolerates_being_alone):
+        self.tolerates_being_alone = tolerates_being_alone
+
+    def set_tolerates_cold_weather(self, tolerates_cold_weather):
+        self.tolerates_cold_weather = tolerates_cold_weather
+
+    def set_tolerates_hot_weather(self, tolerates_hot_weather):
+        self.tolerates_hot_weather = tolerates_hot_weather
+
+    # SET ALL AROUND FRIENDLINESS FIELDS
+    def set_affectionate_with_family(self, affectionate_with_family):
+        self.affectionate_with_family = affectionate_with_family
+
+    def set_kid_friendly(self, kid_friendly):
+        self.kid_friendly = kid_friendly
+
+    def set_dog_friendly(self, dog_friendly):
+        self.dog_friendly = dog_friendly
+
+    def set_friendly_toward_strangers(self, friendly_toward_strangers):
+        self.friendly_toward_strangers = friendly_toward_strangers
+
+    # SET HEALTH AND GROOMING NEEDS FIELDS
+    def set_amount_of_shedding(self, amount_of_shedding):
+        self.amount_of_shedding = amount_of_shedding
+
+    def set_drooling_potential(self, drooling_potential):
+        self.drooling_potential = drooling_potential
+
+    def set_easy_to_groom(self, easy_to_groom):
+        self.easy_to_groom = easy_to_groom
+
+    def set_general_health(self, general_health):
+        self.general_health = general_health
+
+    def set_potential_for_weight_gain(self, potential_for_weight_gain):
+        self.potential_for_weight_gain = potential_for_weight_gain
+
+    def set_size(self, size):
+        self.size = size
+
+    # SET TRAINABILITY FIELDS
+    def set_easy_to_train(self, easy_to_train):
+        self.easy_to_train = easy_to_train
+
+    def set_intelligence(self, intelligence):
+        self.intelligence = intelligence
+
+    def set_potential_for_mouthiness(self, potential_for_mouthiness):
+        self.potential_for_mouthiness = potential_for_mouthiness
+
+    def set_prey_drive(self, prey_drive):
+        self.prey_drive = prey_drive
+
+    def set_tendency_to_bark_or_howl(self, tendency_to_bark_or_howl):
+        self.tendency_to_bark_or_howl = tendency_to_bark_or_howl
+
+    def set_wanderlust_potential(self, wanderlust_potential):
+        self.wanderlust_potential = wanderlust_potential
+
+    # SET PHYSICAL NEEDS FIELDS
+    def set_energy_level(self, energy_level):
+        self.energy_level = energy_level
+
+    def set_intensity(self, intensity):
+        self.intensity = intensity
+
+    def set_exercise_needs(self, exercise_needs):
+        self.exercise_needs = exercise_needs
+
+    def set_potential_for_playfulness(self, potential_for_playfulness):
+        self.potential_for_playfulness = potential_for_playfulness
+
+    # SET VITAL STATS FIELDS
+    def set_dog_breed_group(self, dog_breed_group):
+        self.dog_breed_group = dog_breed_group
+
+    def set_height(self, height):
+        self.height = height
+
+    def set_weight(self, weight):
+        self.weight = weight
+
+    def set_life_span(self, life_span):
+        self.life_span = life_span
+
+#####################################################################
+# CONNECT TO THE WEB SITE AND USE USER-AGENT TO SIMULATE THE CONNECTION BY A HUMAN #####
+
+
+def get_beautiful_soup(url):
+    # Open the URL as Browser, not as python urllib
+    page = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    infile = urllib.request.urlopen(page).read()
+    # data = infile.decode('utf-8')
+    data = infile.decode('ascii', 'ignore')
+    return BeautifulSoup(data, 'lxml', exclude_encodings=["ISO-8859-7"])
+
+
+def get_dogs_name(soup):
+    names = []
+    for name in soup.find_all("a", class_="list-item-title"):
+        names.append(name.text)
+
+    # CONVERT TO LOWER CASE, REQUIRED TO ADD THE DOG'S NAME TO THE URL
+    return [x.lower() for x in names]
+
+
+def get_description_from_top_page(intro):
+    description_elements = intro.find_all('p')[:-1]
+    final_description = ''
+    for sentence in description_elements:
+        final_description += sentence.text
+    return final_description
+
+
+def get_text_from_stars(stars):
+    stars_list = []
+    for star in stars:
+        if star.text != '':
+            stars_list.append(star.text)
+    return stars_list
+
+
+# DEALING WITH DIFFERENT URL DOGS NAME
+def get_soup_dog(name):
+    if name == "korean jindo dog":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/jindo")
+    elif name == "mutt (mixed)":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/mutt")
+    elif name == "petit basset griffon venden":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/petit-basset-griffon-vendeen")
+    elif name == "xoloitzcuintli":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/xoloitzuintli")
+    elif name == "australian shepherd husky":
+        soup = get_beautiful_soup("https://dogtime.com/dog-breeds/australian-shepherd-husky")
+    else:
+        # GET EACH PAGE WITH A DIFFERENT DOG'S NAME
+        soup = get_beautiful_soup(f"https://dogtime.com/dog-breeds/{name.replace(' ', '-')}")
+    return soup
+
+
+def get_group(vital_stats):
+    return vital_stats[0].get_text().split(':')[1]
+
+
+def get_height(vital_stats):
+    for element in vital_stats:
+        if 'inches' in element.get_text():
+            return element.get_text().split(':')[1]
+    return ""
+
+
+def get_weight(vital_stats):
+    for element in vital_stats:
+        if 'pounds' in element.get_text():
+            return element.get_text().split(':')[1]
+    return ""
+
+
+def get_life_span(vital_stats):
+    for element in vital_stats:
+        if 'years' in element.get_text():
+            return element.get_text().split(':')[1]
+    return ""
+
+
+def write_to_csv(dogs):
+    with open('out.csv', 'w', newline='') as f:
+
+        for index, dog in enumerate(dogs):
+            if index == 0:
+                # fieldnames lists the headers for the csv.
+                w = csv.DictWriter(f, fieldnames=vars(dogs[0]))
+                w.writeheader()
+
+            # Build a dictionary of the member names and values...
+            w.writerow({k: getattr(dog, k) for k in vars(dog)})
+
+
+def convert_csv_to_excel():
+    df = pd.read_csv("out.csv")
+    df.to_excel("out.xlsx", index=False)
 
 #####################################################################
 # BUSINESS LOGIC
 
 # For development purpose
-dev = True
-max_rows = 15
+dev = False
+max_rows = 3
 
 # LIST OF ALL DOGS
 dogs = []
