@@ -15,3 +15,13 @@ There are three main files:
 - *df_manipulation.py*
   - WIP --> The idea of this file is to calculate the mean of some dogs attributes;
 
+## Example query
+Get all the Mastiff of Working Dogs types ordered by *adapts_well_to_apartment_living*:
+```
+SELECT breeds.name, breeds_group.name, breeds.life_span, adaptability.adapts_well_to_apartment_living
+FROM dogs.breeds
+JOIN breeds_group ON breeds_group.id = breeds.id_breed_group
+JOIN adaptability ON adaptability.breeds_id = breeds.id
+WHERE breeds_group.name = 'Working Dogs' AND breeds.name LIKE '%mastiff'
+ORDER BY adaptability.adapts_well_to_apartment_living DESC, breeds.name ASC;
+```
