@@ -7,7 +7,7 @@ from lib import *
 
 # For development purpose
 dev = False
-max_rows = 3
+max_rows = 20
 
 # LIST OF ALL DOGS
 dogs = []
@@ -40,8 +40,7 @@ for index, name in enumerate(names):
     description = get_description_from_top_page(intro)
 
     # GET THE STARS FROM THE DOG'S CHARACTERISTICS OF THE PAGE
-    stars = soup.find_all("div", {"class": "characteristic-star-block"})
-    stars_list = get_text_from_stars(stars)
+    info_stars = soup.find_all("a", {"class": "characteristic-stars"})
 
     # GET VITAL STATS LIST
     vital_stats = soup.find_all("div", {"class": "vital-stat-box"})
@@ -55,44 +54,27 @@ for index, name in enumerate(names):
     dog = Dog(name)
     dog.set_image(image)
     dog.set_description(description)
-
-    # GET ALL THE DOGS CHARACTERISTICS
-    # 1. ADAPTABILITY
-    dog.set_adapts_well_to_apartment_living(stars_list[0])
-    dog.set_good_for_novice_owners(stars_list[1])
-    dog.set_sensitivity_level(stars_list[2])
-    dog.set_tolerates_being_alone(stars_list[3])
-    dog.set_tolerates_cold_weather(stars_list[4])
-    dog.set_tolerates_hot_weather(stars_list[5])
-    # 2. ALL ROUND FRIENDLINESS
-    dog.set_affectionate_with_family(stars_list[6])
-    dog.set_kid_friendly(stars_list[7])
-    dog.set_dog_friendly(stars_list[8])
-    dog.set_friendly_toward_strangers(stars_list[9])
-    # 3. HEALTH AND GROOMING NEEDS
-    dog.set_amount_of_shedding(stars_list[10])
-    dog.set_drooling_potential(stars_list[11])
-    dog.set_easy_to_groom(stars_list[12])
-    dog.set_general_health(stars_list[13])
-    dog.set_potential_for_weight_gain(stars_list[14])
-    dog.set_size(stars_list[15])
-    # 4. TRAINABILITY
-    dog.set_easy_to_train(stars_list[16])
-    dog.set_intelligence(stars_list[17])
-    dog.set_potential_for_mouthiness(stars_list[18])
-    dog.set_prey_drive(stars_list[19])
-    dog.set_tendency_to_bark_or_howl(stars_list[20])
-    dog.set_wanderlust_potential(stars_list[21])
-    # 5. PHYSICAL NEEDS
-    dog.set_energy_level(stars_list[22])
-    dog.set_intensity(stars_list[23])
-    dog.set_exercise_needs(stars_list[24])
-    dog.set_potential_for_playfulness(stars_list[25])
-
     dog.set_dog_breed_group(group)
     dog.set_height(height)
     dog.set_weight(weight)
     dog.set_life_span(life_span)
+
+    # Set characteristics (dynamically)
+    for info_star in info_stars:
+
+        # Get title and value of the characteristic
+        characteristic_title = info_star.find("div", {"class": "characteristic-title"}).get_text()
+        characteristic_star = info_star.find("div", {"class": "star"}).get_text()
+
+        # Create a method name dynamically, based on the title of the characteristic (e.g. set_kid_friendly)
+        # Concatenate 'set_' and the lower title (and replace whitespaces and dashes)
+        method_name = 'set_' + characteristic_title.lower().replace(" ", "_").replace("-", "_")
+
+        # Return the reference of the method of the dog
+        method_to_call = getattr(dog, method_name)
+
+        # Use the method of the dog
+        result = method_to_call(characteristic_star)
 
     print(dog.__dict__)
 

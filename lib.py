@@ -33,14 +33,6 @@ def get_description_from_top_page(intro):
     return final_description
 
 
-def get_text_from_stars(stars):
-    stars_list = []
-    for star in stars:
-        if star.text != '':
-            stars_list.append(star.text)
-    return stars_list
-
-
 # DEALING WITH DIFFERENT URL DOGS NAME
 def get_soup_dog(name):
     if name == "korean jindo dog":
